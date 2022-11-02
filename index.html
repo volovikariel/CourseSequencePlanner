@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Sequence Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="index.js" defer></script>
+</head>
+
+<body>
+    <div id="root-container">
+        <div id="node-graph-container">
+            <svg id="root-svg" width="100%" height="100%">
+                <!--We move nodes around by moving the SVG element in which they're contained-->
+                <!--These will be placed through JS in theory, but for the Alpha System we may have to hard-code it-->
+                <svg id="COMP233">
+                    <!--Offset the circle by twice its radius, so that it's fully visible-->
+                    <circle class="course-node" cx="100px" cy="100px" r="50px" fill="none" stroke="black" />
+                    <!--Offset the text by the same amount that the circle is offset, so as to have it centered-->
+                    <!-- NOTE: Can use foreign object instead of <text> (this'll allow us to place native HTML elements inside) -->
+                    <text class="course-text" x="100px" y="100px" text-anchor="middle"
+                        dominant-baseline="central">COMP233</text>
+                </svg>
+            </svg>
+        </div>
+        <div id=" term-selector-container">
+            <div id="course-term-selector">Course term selector</div>
+            <div id="weekly-course-sechedule">Schedule</div>
+        </div>
+        <div id="course-information-container">Course information</div>
+        <div id="program-information-container">Program information</div>
+    </div>
+</body>
+
+</html>

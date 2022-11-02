@@ -1,0 +1,43 @@
+html,
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#root-container {
+    /* Make the grid fit the entire page */
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    /* Define the grid as having:display:
+     - 2 columns (with one being 3 times as large as the other)
+     - 3 equally sized rows
+    */
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    /* Specify which element occupies which row/column */
+    grid-template-areas:
+        'node-graph term-selector-container'
+        'node-graph course-information-container'
+        'node-graph program-information-container';
+}
+
+#root-container>div {
+    border: 1px dashed black;
+}
+
+#node-graph-container {
+    grid-area: node-graph;
+}
+
+#term-selector-container {
+    grid-area: term-selector-container;
+}
+
+#course-information-container {
+    grid-area: course-information-container;
+}
+
+#program-information-container {
+    grid-area: program-information-container;
+}
