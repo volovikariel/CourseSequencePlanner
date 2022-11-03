@@ -1,3 +1,7 @@
+:root {
+    --circle-radius: 50px;
+}
+
 html,
 body {
     margin: 0;
@@ -72,4 +76,19 @@ body {
 
 .selected {
     fill: lightgoldenrodyellow;
+}
+
+#circle {
+    stroke: black;
+    stroke-width: 12px;
+    fill: white;
+    paint-order: fill;
+    clip-path: url(#clip-path);
+}
+
+#circle,
+#clip-path-circle {
+    cx: var(--circle-radius);
+    cy: var(--circle-radius);
+    r: var(--circle-radius);
 }
