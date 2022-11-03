@@ -1,17 +1,83 @@
 let selectedCourseId = null;
 let selectedProgram = 'Computer Science'
+const courseInformationByCourseId = {
+    'COMP248': {
+        'courseName': 'The Course Name',
+        'courseCode': 'COMP248',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'COMP249': {
+        'courseName': 'The Course Name',
+        'courseCode': 'COMP249',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'COMP228': {
+        'courseName': 'The Course Name',
+        'courseCode': 'COMP228',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'MATH203': {
+        'courseName': 'The Course Name',
+        'courseCode': 'MATH203',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'CEGEP103': {
+        'courseName': 'The Course Name',
+        'courseCode': 'CEGEP103',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'NYA': {
+        'courseName': 'The Course Name',
+        'courseCode': 'NYA',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'NYC': {
+        'courseName': 'The Course Name',
+        'courseCode': 'NYC',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'CEGEP105': {
+        'courseName': 'The Course Name',
+        'courseCode': 'CEGEP105',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'MATH204': {
+        'courseName': 'The Course Name',
+        'courseCode': 'MATH204',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+    'COMP346': {
+        'courseName': 'The Course Name',
+        'courseCode': 'COMP346',
+        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    },
+}
 
-document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(selectedProgram))
+setup()
 
-document.querySelectorAll('.course-node').forEach(courseNode => {
-    courseNode.addEventListener('click', clickCourse);
-})
+function setup() {
+    document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(selectedProgram))
 
-document.getElementById('root-svg').addEventListener('click', () => {
-    setCourseSelected(selectedCourseId, false);
-    selectedCourseId = null;
-    setCourseInformation();
-})
+    let xOffset = 0;
+    let yOffset = 0;
+    for (let courseId of Object.keys(courseInformationByCourseId)) {
+        addCourseNode(courseId, xOffset, yOffset)
+        xOffset += 100
+        yOffset += 100
+    }
+
+    document.querySelectorAll('.course-node').forEach(courseNode => {
+        courseNode.addEventListener('click', clickCourse);
+    })
+
+    document.getElementById('root-svg').addEventListener('click', () => {
+        setCourseSelected(selectedCourseId, false);
+        selectedCourseId = null;
+        setCourseInformation();
+    })
+
+}
+
 
 function clickCourse(event) {
     // Clearing previous one
@@ -26,6 +92,9 @@ function clickCourse(event) {
 }
 
 function setCourseSelected(selectedCourseId, isSelected) {
+    if (typeof selectedCourseId == 'undefined' || selectedCourseId == null) {
+        return;
+    }
     const courseNode = document.querySelector(`[course-id=${selectedCourseId}]`)
     const courseCircle = courseNode.querySelector('circle')
     if (isSelected) {
@@ -37,26 +106,14 @@ function setCourseSelected(selectedCourseId, isSelected) {
 
 function setCourseInformation(courseInformation) {
     if (typeof courseInformation == 'undefined' || courseInformation == null) {
-        document.getElementById('course-information-content').innerHTML = ''
+        document.getElementById('course-information-content').innerHTML = 'Click on a course to display its course information'
     } else {
         document.getElementById('course-information-content').innerHTML = formatCourseInformation(courseInformation)
     }
 }
 
 function getCourseInformation(courseId) {
-    const courseInformation = {
-        'COMP233': {
-            'courseName': 'The Course Name',
-            'courseCode': 'COMP233',
-            'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
-        },
-        'COMP234': {
-            'courseName': 'The Course Name',
-            'courseCode': 'COMP234',
-            'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
-        }
-    }
-    return courseInformation[courseId]
+    return courseInformationByCourseId[courseId]
 }
 
 function formatCourseInformation({ courseName, courseCode, information }) {
@@ -111,6 +168,24 @@ function formatProgramInformation({ ['Program Name']: programName, electives }) 
     })
     return `
         <span>Program name: ${programName}</span>
+        <p>Graduation Requirements</p>
         <div style="display: flex; flex-direction: column;">${formattedElectives.join('')}</div>
     `
+}
+
+function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
+    document.getElementById('root-svg').innerHTML += `
+        <svg course-id="${courseId}" class="course-node" x="${xOffsetInPx}" y="${yOffsetInPx}">
+            <!--Offset the circle by twice its radius, so that it's fully visible-->
+            <circle class="course-circle" cx="50" cy="50" r="50" fill="white" stroke="black" />
+            <!--Offset the text by the same amount that the circle is offset, so as to have it centered-->
+            <!-- NOTE: Can use foreign object instead of <text> (this'll allow us to place native HTML elements inside) -->
+            <text class="course-text" x="50" y="50" text-anchor="middle"
+                dominant-baseline="central">${courseId}</text>
+        </svg>
+    `
+}
+
+function removeCourseNode(courseId) {
+    document.getElementById(courseId)?.remove()
 }

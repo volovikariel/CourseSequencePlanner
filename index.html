@@ -14,21 +14,6 @@
     <div id="root-container">
         <div id="node-graph-container">
             <svg id="root-svg" width="100%" height="100%">
-                <!--We move nodes around by moving the SVG element in which they're contained-->
-                <!--These will be placed through JS in theory, but for the Alpha System we may have to hard-code it-->
-                <svg course-id="COMP233" class="course-node">
-                    <!--Offset the circle by twice its radius, so that it's fully visible-->
-                    <circle class="course-circle" cx="50" cy="50" r="50" fill="white" stroke="black" />
-                    <!--Offset the text by the same amount that the circle is offset, so as to have it centered-->
-                    <!-- NOTE: Can use foreign object instead of <text> (this'll allow us to place native HTML elements inside) -->
-                    <text class="course-text" x="50" y="50" text-anchor="middle"
-                        dominant-baseline="central">COMP233</text>
-                </svg>
-                <svg course-id="COMP234" class="course-node" x="100px" y="100px">
-                    <circle class="course-circle" cx="50" cy="50" r="50" fill="white" stroke="black" />
-                    <text class="course-text" x="50" y="50" text-anchor="middle"
-                        dominant-baseline="central">COMP234</text>
-                </svg>
             </svg>
         </div>
         <div id="term-selector-container">
@@ -41,7 +26,7 @@
         </div>
         <div id="course-information-container">
             <p class="section-title">Course information</p>
-            <p id="course-information-content"></p>
+            <p id="course-information-content">Click on a course to display its course information</p>
         </div>
         <div id="program-information-container">
             <p class="section-title">Program information</p>
