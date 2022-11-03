@@ -13,7 +13,7 @@ body {
      - 2 columns (with one being 3 times as large as the other)
      - 3 equally sized rows
     */
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: auto 30%;
     grid-template-rows: repeat(3, 1fr);
     /* Specify which element occupies which row/column */
     grid-template-areas:
@@ -32,12 +32,44 @@ body {
 
 #term-selector-container {
     grid-area: term-selector-container;
+    display: grid;
+    grid-auto-columns: 1fr 1fr;
 }
+
+#term-selector-container>div {
+    width: 100%;
+    height: 100%;
+    border: 1px dashed black;
+}
+
+#course-term-selector,
+#weekly-course-sechedule {
+    display: flex;
+    justify-content: center;
+}
+
+#course-term-selector {}
+
+#weekly-course-sechedule {}
 
 #course-information-container {
     grid-area: course-information-container;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
 }
 
 #program-information-container {
     grid-area: program-information-container;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-title {
+    margin: 0;
+}
+
+.selected {
+    fill: lightgoldenrodyellow;
 }
