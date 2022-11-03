@@ -127,7 +127,7 @@ function setCourseSelected(selectedCourseId, isSelected) {
         return;
     }
     const courseNode = document.querySelector(`[course-id=${selectedCourseId}]`)
-    const courseCircle = courseNode.querySelector('circle')
+    const courseCircle = courseNode.getElementById('circle')
     if (isSelected) {
         courseCircle.classList.add('selected')
     } else {

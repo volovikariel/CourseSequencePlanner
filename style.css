@@ -8,6 +8,10 @@ body {
     overflow: hidden;
 }
 
+p {
+    margin: 0;
+}
+
 #root-container {
     /* Make the grid fit the entire page */
     width: 100vw;
@@ -75,7 +79,7 @@ body {
 }
 
 .selected {
-    fill: lightgoldenrodyellow;
+    fill: lightgoldenrodyellow !important;
 }
 
 #circle {
