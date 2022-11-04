@@ -1,112 +1,118 @@
 :root {
-  --circle-radius: 50px;
+    --circle-radius: 50px;
 }
 
 html,
 body {
-  margin: 0;
-  overflow: hidden;
+    margin: 0;
+    overflow: hidden;
 }
 
 p {
-  margin: 0;
+    margin: 0;
 }
 
 #root-container {
-  /* Make the grid fit the entire page */
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  /* Define the grid as having:display:
+    /* Make the grid fit the entire page */
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    /* Define the grid as having:display:
      - 2 columns (with one being 3 times as large as the other)
      - 3 equally sized rows
     */
-  grid-template-columns: auto 30%;
-  grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: auto 30%;
+    grid-template-rows: repeat(3, 1fr);
 
-  /* Specify which element occupies which row/column */
-  grid-template-areas:
-    "node-graph term-selector-container"
-    "node-graph course-information-container"
-    "node-graph program-information-container";
+    /* Specify which element occupies which row/column */
+    grid-template-areas:
+        "node-graph term-selector-container"
+        "node-graph course-information-container"
+        "node-graph program-information-container";
 }
 
 #node-graph-container {
-  grid-area: node-graph;
+    grid-area: node-graph;
 }
 
 #term-selector-container {
-  grid-area: term-selector-container;
-  display: grid;
-  grid-auto-columns: 1fr 1fr;
+    grid-area: term-selector-container;
+    display: grid;
+    grid-auto-columns: 1fr 1fr;
 }
 
-#term-selector-container > div {
-  width: 100%;
-  height: 100%;
+#term-selector-container>div {
+    width: 100%;
+    height: 100%;
 }
 
 #course-term-selector,
 #weekly-course-sechedule {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 #course-information-container {
-  grid-area: course-information-container;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
+    grid-area: course-information-container;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
 }
+
 #course-information-content {
-  color: indigo;
+    color: indigo;
 }
 
 #program-information-container {
-  grid-area: program-information-container;
-  display: flex;
-  flex-direction: column;
+    grid-area: program-information-container;
+    display: flex;
+    flex-direction: column;
 }
 
 .section-title {
-  align-self: center;
-  color: blue;
-  font-weight: bold;
+    align-self: center;
+    color: blue;
+    font-weight: bold;
 }
 
 .selected {
-  fill: lightgoldenrodyellow !important;
+    fill: lightgoldenrodyellow !important;
 }
 
 #circle {
-  stroke: black;
-  stroke-width: 3px;
-  fill: white;
-  paint-order: fill;
-  clip-path: url(#clip-path);
+    stroke: black;
+    stroke-width: 3px;
+    fill: white;
+    paint-order: fill;
+    clip-path: url(#clip-path);
 }
 
 #circle,
 #clip-path-circle {
-  cx: var(--circle-radius);
-  cy: var(--circle-radius);
-  r: var(--circle-radius);
+    cx: var(--circle-radius);
+    cy: var(--circle-radius);
+    r: var(--circle-radius);
 }
+
 .coursename {
-  color: black;
-  font-weight: bold;
+    color: black;
+    font-weight: bold;
 }
+
 .coursecode {
-  color: black;
-  font-weight: bold;
+    color: black;
+    font-weight: bold;
 }
+
 .program {
-  font-weight: bold;
+    font-weight: bold;
 }
+
 .graduation {
-  font-weight: bold;
+    font-weight: bold;
 }
+
 #root-svg {
-  background-color: rgb(85, 85, 85);
+    background-color: rgb(85, 85, 85);
 }
