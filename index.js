@@ -111,9 +111,11 @@ function setup() {
                 const ratio = d2 / distanceBetweenSourceAndDestination
                 const dx = (destinationCenterX - sourceCenterX) * ratio
                 const dy = (destinationCenterY - sourceCenterY) * ratio
-                const x = sourceCenterX + dx
-                const y = sourceCenterY + dy
-                addEdge(sourceCenterX, sourceCenterY, x, y, isPrereq)
+                const destX = sourceCenterX + dx
+                const destY = sourceCenterY + dy
+                const sourceX = destinationCenterX - dx
+                const sourceY = destinationCenterY - dy
+                addEdge(sourceX, sourceY, destX, destY, isPrereq)
             }
         }
     }
