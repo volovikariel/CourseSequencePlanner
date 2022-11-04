@@ -158,7 +158,6 @@ function addEdge(fromX, fromY, toX, toY, isPrereq) {
                 marker-end='url(#head)'
                 stroke-width='2'
                 fill='none' stroke='black'  
-                z="-1"
                 ${isPrereq ? "" : 'stroke-dasharray="5"'}
                 d='M${fromX},${fromY} ${toX},${toY}'
             />
