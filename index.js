@@ -140,11 +140,17 @@ function addEdge(fromX, fromY, toX, toY, isPrereq) {
         `
         <svg>
             <defs>
-            <marker id='head' orient="auto"
-                markerWidth='2' markerHeight='5'
-                refX='0.1' refY='2'>
-                <path d='M0,0 V4 L2,2 Z' fill="black"/>
-            </marker>
+            < <marker
+            id="head"
+            viewBox="0 0 10 10"
+            refX="5"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" />
+          </marker>
+      
             </defs>
 
             <path
@@ -154,7 +160,7 @@ function addEdge(fromX, fromY, toX, toY, isPrereq) {
                 fill='none' stroke='black'  
                 z="-1"
                 ${isPrereq ? "" : 'stroke-dasharray="5"'}
-                d='M${fromX},${fromY} ${toX - 3},${toY - 3}'
+                d='M${fromX},${fromY} ${toX},${toY}'
             />
         </svg>
     `
