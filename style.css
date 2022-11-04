@@ -107,3 +107,6 @@ p {
 .graduation {
   font-weight: bold;
 }
+#root-svg {
+  background-color: rgb(85, 85, 85);
+}
