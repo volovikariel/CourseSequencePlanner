@@ -96,3 +96,7 @@ p {
     cy: var(--circle-radius);
     r: var(--circle-radius);
 }
+
+#root-svg {
+    background-color: rgb(85, 85, 85);
+}
