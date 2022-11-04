@@ -98,7 +98,6 @@ function setup() {
     });
     for (let [reqsByCourseId, isPrereq] of [[prereqsByCourseId, true], [coreqsByCourseId, false]]) {
         for (let [courseId, reqIds] of reqsByCourseId) {
-            console.log(courseId, reqIds, isPrereq)
             const destinationBoundingRect = document.querySelector(`[course-id=${courseId}]`).getBoundingClientRect()
             const destinationCenterX = destinationBoundingRect.left + (destinationBoundingRect.right - destinationBoundingRect.left) / 2
             const destinationCenterY = destinationBoundingRect.top + (destinationBoundingRect.bottom - destinationBoundingRect.top) / 2
@@ -209,8 +208,6 @@ function formatCourseInformation({ courseName, courseCode, information }) {
             <p>${information}</p>
         `
 }
-
-
 
 function getProgramInformation(program) {
     const programInformation = {
