@@ -38,40 +38,40 @@ const courseInformationByCourseId = {
         'information': 'Functional notation. Differentiation of polynomials. The power, product, quotient, and chain rules. Differentiation of elementary functions. Implicit differentiation. Higher derivatives. Maxima and minima. Applications: tangents to plane curves, graphing, related rates. Approximations using the differential. Antiderivatives, definite integrals, area.'
     },
     'CEGEP103': {
-        'courseName': 'The Course Name',
+        'courseName': 'CEGEP103',
         'courseCode': 'CEGEP103',
         'prereqs': [],
         'coreqs': [],
         'xOffsetPercent': 0.43,
         'yOffsetPercent': 0.12,
-        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+        'information': 'Calculus 1'
     },
     'NYA': {
-        'courseName': 'The Course Name',
+        'courseName': 'Cegep Mathematics NYA',
         'courseCode': 'NYA',
         'prereqs': [],
         'coreqs': [],
         'xOffsetPercent': 0.52,
         'yOffsetPercent': 0.25,
-        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+        'information': 'Cegep Mathematics NYA'
     },
     'NYC': {
-        'courseName': 'The Course Name',
+        'courseName': 'Cegep Mathematics NYC',
         'courseCode': 'NYC',
         'prereqs': [],
         'coreqs': [],
         'xOffsetPercent': 0.00,
         'yOffsetPercent': 0.26,
-        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+        'information': 'Cegep Mathematics NYC'
     },
     'CEGEP105': {
-        'courseName': 'The Course Name',
+        'courseName': 'CEGEP105',
         'courseCode': 'CEGEP105',
         'prereqs': [],
         'coreqs': [],
         'xOffsetPercent': 0.61,
         'yOffsetPercent': 0.08,
-        'information': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+        'information': 'Linear Algebra and Vector Geometry'
     },
     'MATH204': {
         'courseName': 'Vectors and Matrices',
