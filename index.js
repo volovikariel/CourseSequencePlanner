@@ -75,28 +75,50 @@ const courseInformationByCourseId = {
 
 setup()
 
-const prereqsByCourseId = Object.entries(courseInformationByCourseId).map(([courseId, { prereqs }]) => {
-    return [courseId, prereqs]
-});
-console.log(prereqsByCourseId)
-
-const prereqsSort = topologicalSort()
-const coreqsSort = topologicalSort()
-function topologicalSort() {
-
-}
-
 function setup() {
     document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(selectedProgram))
+    const circleRadius = Number(window.getComputedStyle(document.body).getPropertyValue('--circle-radius').trimStart().replace('px', ''))
 
+    // Adding the nodes
     let xOffset = 0;
     let yOffset = 0;
+    const rootElementBounds = document.getElementById('root-svg').getBoundingClientRect()
     for (let courseId of Object.keys(courseInformationByCourseId)) {
         addCourseNode(courseId, xOffset, yOffset)
-        xOffset += 100
-        yOffset += 100
+        xOffset = Math.random() * (rootElementBounds.right - circleRadius * 2)
+        yOffset = Math.random() * (rootElementBounds.bottom - circleRadius * 2)
     }
 
+    // Adding the edges
+    const prereqsByCourseId = Object.entries(courseInformationByCourseId).map(([courseId, { prereqs }]) => {
+        return [courseId, prereqs]
+    });
+    const coreqsByCourseId = Object.entries(courseInformationByCourseId).map(([courseId, { coreqs }]) => {
+        return [courseId, coreqs]
+    });
+    for (let [reqsByCourseId, isPrereq] of [[prereqsByCourseId, true], [coreqsByCourseId, false]]) {
+        for (let [courseId, reqIds] of reqsByCourseId) {
+            console.log(courseId, reqIds, isPrereq)
+            const destinationBoundingRect = document.querySelector(`[course-id=${courseId}]`).getBoundingClientRect()
+            const destinationCenterX = destinationBoundingRect.left + (destinationBoundingRect.right - destinationBoundingRect.left) / 2
+            const destinationCenterY = destinationBoundingRect.top + (destinationBoundingRect.bottom - destinationBoundingRect.top) / 2
+            for (let prereqId of reqIds) {
+                const sourceBoundingRect = document.querySelector(`[course-id=${prereqId}]`).getBoundingClientRect()
+                const sourceCenterX = sourceBoundingRect.left + (sourceBoundingRect.right - sourceBoundingRect.left) / 2
+                const sourceCenterY = sourceBoundingRect.top + (sourceBoundingRect.bottom - sourceBoundingRect.top) / 2
+                const distanceBetweenSourceAndDestination = Math.sqrt(Math.pow((destinationCenterX - sourceCenterX), 2) + Math.pow((destinationCenterY - sourceCenterY), 2))
+                const d2 = distanceBetweenSourceAndDestination - circleRadius;
+                const ratio = d2 / distanceBetweenSourceAndDestination
+                const dx = (destinationCenterX - sourceCenterX) * ratio
+                const dy = (destinationCenterY - sourceCenterY) * ratio
+                const x = sourceCenterX + dx
+                const y = sourceCenterY + dy
+                addEdge(sourceCenterX, sourceCenterY, x, y, isPrereq)
+            }
+        }
+    }
+
+    // Adding even tlisteners
     document.querySelectorAll('.course-node').forEach(courseNode => {
         courseNode.addEventListener('click', clickCourse);
     })
@@ -109,6 +131,32 @@ function setup() {
 
 }
 
+// isPrereq = true: prereq
+// isPrereq = false: coreq
+function addEdge(fromX, fromY, toX, toY, isPrereq) {
+    document.getElementById('root-svg').innerHTML +=
+        `
+        <svg>
+            <defs>
+            <marker id='head' orient="auto"
+                markerWidth='2' markerHeight='5'
+                refX='0.1' refY='2'>
+                <path d='M0,0 V4 L2,2 Z' fill="black"/>
+            </marker>
+            </defs>
+
+            <path
+                id='arrow-line'
+                marker-end='url(#head)'
+                stroke-width='2'
+                fill='none' stroke='black'  
+                z="-1"
+                ${isPrereq ? "" : 'stroke-dasharray="5"'}
+                d='M${fromX},${fromY} ${toX - 3},${toY - 3}'
+            />
+        </svg>
+    `
+}
 
 function clickCourse(event) {
     // Clearing previous one

@@ -84,7 +84,7 @@ p {
 
 #circle {
     stroke: black;
-    stroke-width: 12px;
+    stroke-width: 3px;
     fill: white;
     paint-order: fill;
     clip-path: url(#clip-path);
