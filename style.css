@@ -56,7 +56,7 @@ p {
     grid-area: course-information-container;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     overflow-y: auto;
 }
 
