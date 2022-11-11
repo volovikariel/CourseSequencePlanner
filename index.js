@@ -260,7 +260,7 @@ function setup() {
   const rootElementBounds = document.getElementById('root-svg').getBoundingClientRect();
   const rootElementWidth = rootElementBounds.width;
   const rootElementHeight = rootElementBounds.height;
-  Object.entries(courseInformationByCourseId).forEach((courseId, courseInformation) => {
+  Object.entries(courseInformationByCourseId).forEach(([courseId, courseInformation]) => {
     // The fixed position of every node is relative to the root window
     addCourseNode(
       courseId,
@@ -282,9 +282,9 @@ function setup() {
     [coreqsByCourseId, false],
   ]
     .forEach(([reqsByCourseId, isPrereq]) => {
-      Object.entries(reqsByCourseId).forEach(([courseId, reqIds]) => {
+      reqsByCourseId.forEach(([courseId, reqIds]) => {
         const destinationBoundingRect = document
-          .querySelector(`[course-id=${courseId}]`)
+          .querySelector(`[course-id='${courseId}']`)
           .getBoundingClientRect();
         const destinationCenterX = destinationBoundingRect.left
           + (destinationBoundingRect.right - destinationBoundingRect.left) / 2;
