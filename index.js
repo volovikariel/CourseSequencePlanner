@@ -92,6 +92,30 @@ const courseInformationByCourseId = {
     information: 'Fundamentals of operating system functionalities, design and implementation. Multiprogramming: processes and threads, context switching, queuing models and scheduling. Interprocess communication and synchronization. Principles of concurrency. Synchronization primitives. Deadlock detection and recovery, prevention and avoidance schemes. Memory management. Device management. File systems. Protection models and schemes.',
   },
 };
+const courseSequenceState = {
+  university: {
+    universityName: undefined,
+  },
+  program: {
+    programName: undefined,
+    programRequirements: undefined,
+  },
+  userState: {
+    externalRequirementsCompleted: undefined,
+    termStates: {
+      termA: {
+        taken: true, // if true, then term has already passed, can't change past, else, can change
+        courses: undefined,
+      },
+      termB: {
+        taken: false,
+        courses: undefined,
+      },
+    },
+    // Ranked in ascending order
+    rankedCourseDesireability: ['courseA', 'courseB'],
+  },
+};
 
 function formatProgramInformation({
   'Program Name': programName,
