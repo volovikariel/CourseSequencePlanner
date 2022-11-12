@@ -4,11 +4,11 @@ const svg = document.getElementById('root-svg');
 const viewBox = svg.viewBox.baseVal;
 let isPointerDown = false;
 let pointerOrigin;
-function getXYposFromEvent(e) {
+function convertPosToSvg(x, y) {
   const point = new DOMPoint();
   // clientX and cientY are relative to the document
-  point.x = e.clientX;
-  point.y = e.clientY;
+  point.x = x;
+  point.y = y;
   // getScreenCTM() returns the matrix transformation FROM svg TO document coordinates
   // We want the opposite (document TO svg), so we call inverse()
   // We then apply this same transformation to our x, y positions
@@ -18,7 +18,7 @@ function getXYposFromEvent(e) {
 function onMouseDown(e) {
   isPointerDown = true;
   // Define new 'pan sequence' pointer orign
-  pointerOrigin = getXYposFromEvent(e);
+  pointerOrigin = convertPosToSvg(e.clientX, e.clientY);
   svg.classList.add('panning');
 }
 function onMouseMove(e) {
@@ -26,7 +26,7 @@ function onMouseMove(e) {
   // Prevent selection of text etc in the SVG
   e.preventDefault();
 
-  const pointerPos = getXYposFromEvent(e);
+  const pointerPos = convertPosToSvg(e.clientX, e.clientY);
   // Get x and y delta of the move since pressing down on the mouse
   const deltaX = pointerPos.x - pointerOrigin.x;
   const deltaY = pointerPos.y - pointerOrigin.y;
@@ -54,7 +54,7 @@ function onMouseWheel(e) {
   // if the deltayY is negative, w're zooming
   const isZoomIn = e.deltaY < 0;
   // Keep the relative location of the contents of the svg the same
-  const pointerPosOldCoords = getXYposFromEvent(e);
+  const pointerPosOldCoords = convertPosToSvg(e.clientX, e.clientY);
   if (isZoomIn) {
     // Make the viewbox smaller (we can see less content when zooming in)
     viewBox.width /= 2;
@@ -362,19 +362,17 @@ function setup() {
   );
 
   // Adding the nodes
-  const rootElementBounds = document.getElementById('root-svg').getBoundingClientRect();
-  const rootElementWidth = rootElementBounds.width;
-  const rootElementHeight = rootElementBounds.height;
   Object.entries(courseInformationByCourseId).forEach(([courseId, courseInformation]) => {
     // The fixed position of every node is relative to the root window
     addCourseNode(
       courseId,
-      courseInformation.xOffsetPercent * rootElementWidth,
-      courseInformation.yOffsetPercent * rootElementHeight,
+      courseInformation.xOffsetPercent * viewBox.width + viewBox.x,
+      courseInformation.yOffsetPercent * viewBox.height + viewBox.y,
     );
   });
 
   // Adding the edges
+  // NOTE: Edge drawing is broken if the user zooms in/out with the browser
   const prereqsByCourseId = Object.entries(courseInformationByCourseId).map(
     ([courseId, { prereqs }]) => [courseId, prereqs],
   );
@@ -392,17 +390,17 @@ function setup() {
           .querySelector(`[course-id='${courseId}']`)
           .getBoundingClientRect();
         const destinationCenterX = destinationBoundingRect.left
-          + (destinationBoundingRect.right - destinationBoundingRect.left) / 2;
+          + destinationBoundingRect.width / 2;
         const destinationCenterY = destinationBoundingRect.top
-          + (destinationBoundingRect.bottom - destinationBoundingRect.top) / 2;
+          + destinationBoundingRect.height / 2;
         reqIds.forEach((reqId) => {
           const sourceBoundingRect = document
             .querySelector(`[course-id=${reqId}]`)
             .getBoundingClientRect();
           const sourceCenterX = sourceBoundingRect.left
-            + (sourceBoundingRect.right - sourceBoundingRect.left) / 2;
+            + sourceBoundingRect.width / 2;
           const sourceCenterY = sourceBoundingRect.top
-            + (sourceBoundingRect.bottom - sourceBoundingRect.top) / 2;
+            + sourceBoundingRect.height / 2;
           const distanceBetweenSourceAndDestination = Math.sqrt(
             (destinationCenterX - sourceCenterX) ** 2
             + (destinationCenterY - sourceCenterY) ** 2,
