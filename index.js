@@ -1,3 +1,51 @@
+// Panning section start
+// This section handles pannig the node-graph by clicking and moving the mouse around
+const svg = document.getElementById('root-svg');
+const viewBox = svg.viewBox.baseVal;
+let isPointerDown = false;
+let pointerOrigin;
+function getXYposFromEvent(e) {
+  const point = new DOMPoint();
+  // clientX and cientY are relative to the document
+  point.x = e.clientX;
+  point.y = e.clientY;
+  // getScreenCTM() returns the matrix transformation FROM svg TO document coordinates
+  // We want the opposite (document TO svg), so we call inverse()
+  // We then apply this same transformation to our x, y positions
+  const docToSvgCoordinates = svg.getScreenCTM().inverse();
+  return point.matrixTransform(docToSvgCoordinates);
+}
+function onMouseDown(e) {
+  isPointerDown = true;
+  // Define new 'pan sequence' pointer orign
+  pointerOrigin = getXYposFromEvent(e);
+}
+function onMouseMove(e) {
+  if (!isPointerDown) return;
+  // Prevent selection of text etc in the SVG
+  e.preventDefault();
+
+  const pointerPos = getXYposFromEvent(e);
+  // Get x and y delta of the move since pressing down on the mouse
+  const deltaX = pointerPos.x - pointerOrigin.x;
+  const deltaY = pointerPos.y - pointerOrigin.y;
+  // We subtract the delta because our pan goes in the opposite direction
+  // e.g: click and drag right means our 'camera' moves to the left
+  viewBox.x -= (deltaX);
+  viewBox.y -= (deltaY);
+  const newViewboxString = `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`;
+  svg.setAttribute('viewBox', newViewboxString);
+}
+function onMouseUp() {
+  isPointerDown = false;
+}
+svg.addEventListener('mousedown', onMouseDown);
+svg.addEventListener('mousemove', onMouseMove);
+svg.addEventListener('mouseup', onMouseUp);
+// Pointer leaves SVG area
+svg.addEventListener('mouseleave', onMouseUp);
+// Panning section end
+
 let selectedCourseId = null;
 const selectedProgram = 'Computer Science';
 const courseInformationByCourseId = {
