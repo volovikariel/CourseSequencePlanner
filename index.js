@@ -1,5 +1,5 @@
 // Panning section start
-// This section handles pannig the node-graph by clicking and moving the mouse around
+// This section handles panning the node-graph by clicking and moving the mouse around
 const svg = document.getElementById('root-svg');
 const viewBox = svg.viewBox.baseVal;
 let isPointerDown = false;
@@ -19,6 +19,7 @@ function onMouseDown(e) {
   isPointerDown = true;
   // Define new 'pan sequence' pointer orign
   pointerOrigin = getXYposFromEvent(e);
+  svg.classList.add('panning');
 }
 function onMouseMove(e) {
   if (!isPointerDown) return;
@@ -38,6 +39,7 @@ function onMouseMove(e) {
 }
 function onMouseUp() {
   isPointerDown = false;
+  svg.classList.remove('panning');
 }
 svg.addEventListener('mousedown', onMouseDown);
 svg.addEventListener('mousemove', onMouseMove);
@@ -45,6 +47,37 @@ svg.addEventListener('mouseup', onMouseUp);
 // Pointer leaves SVG area
 svg.addEventListener('mouseleave', onMouseUp);
 // Panning section end
+
+// Zooming section start
+// This section handles zooming in and out the node-graph by scrolling the mousewheel
+function onMouseWheel(e) {
+  // if the deltayY is negative, w're zooming
+  const isZoomIn = e.deltaY < 0;
+  // Keep the relative location of the contents of the svg the same
+  const pointerPosOldCoords = getXYposFromEvent(e);
+  if (isZoomIn) {
+    // Make the viewbox smaller (we can see less content when zooming in)
+    viewBox.width /= 2;
+    viewBox.height /= 2;
+    // Keep the item over the mouse pointer centered
+    viewBox.x += (pointerPosOldCoords.x - viewBox.x) / 2;
+    viewBox.y += (pointerPosOldCoords.y - viewBox.y) / 2;
+  } else {
+    // Make the viewbox larger (we can see more content when zooming out)
+    viewBox.width *= 2;
+    viewBox.height *= 2;
+    // Keep the item over the mouse pointer centered
+    /*
+      Example: mouse cursor is on position (50,50), VB=(0,0,100,100)
+      Question: What values of x and y VB=(x,y,200,200) will keep the item at position (50,50) centered?
+      TBH - I dont rememeber how I made it work
+    */
+    viewBox.x -= pointerPosOldCoords.x - viewBox.x;
+    viewBox.y -= pointerPosOldCoords.y - viewBox.y;
+  }
+}
+svg.addEventListener('wheel', onMouseWheel);
+// Zooming section end
 
 let selectedCourseId = null;
 const selectedProgram = 'Computer Science';

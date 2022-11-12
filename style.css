@@ -116,3 +116,9 @@ p {
 #root-svg {
     background-color: rgb(85, 85, 85);
 }
+.can-pan {
+    cursor: grab;
+}
+.panning {
+    cursor: grabbing;
+}
