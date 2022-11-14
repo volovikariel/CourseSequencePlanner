@@ -1,3 +1,11 @@
+// Some constants
+const circleRadius = Number(
+  window
+    .getComputedStyle(document.body)
+    .getPropertyValue('--circle-radius')
+    .trimStart()
+    .replace('px', ''),
+);
 // Panning section start
 // This section handles panning the node-graph by clicking and moving the mouse around
 const svg = document.getElementById('root-svg');
@@ -56,9 +64,16 @@ function onMouseWheel(e) {
   // Keep the relative location of the contents of the svg the same
   const pointerPosOldCoords = convertPosToSvg(e.clientX, e.clientY);
   if (isZoomIn) {
+    const newViewboxWidth = viewBox.width / 2;
+    const newViewboxHeight = viewBox.height / 2;
+    const circleDiameter = circleRadius * 2;
+    // If the new viewbox won't even be able to accomodate the size of a node, don't zoom in
+    if ((newViewboxWidth < circleDiameter) || (newViewboxHeight < circleDiameter)) {
+      return;
+    }
     // Make the viewbox smaller (we can see less content when zooming in)
-    viewBox.width /= 2;
-    viewBox.height /= 2;
+    viewBox.width = newViewboxWidth;
+    viewBox.height = newViewboxHeight;
     // Keep the item over the mouse pointer centered
     viewBox.x += (pointerPosOldCoords.x - viewBox.x) / 2;
     viewBox.y += (pointerPosOldCoords.y - viewBox.y) / 2;
@@ -68,9 +83,11 @@ function onMouseWheel(e) {
     viewBox.height *= 2;
     // Keep the item over the mouse pointer centered
     /*
-      Example: mouse cursor is on position (50,50), VB=(0,0,100,100)
-      Question: What values of x and y VB=(x,y,200,200) will keep the item at position (50,50) centered?
-      TBH - I dont rememeber how I made it work
+      Example:
+      - mouse cursor is on a node on position (50,50), which is centered
+      - ViewBox(x=0,y=0,width=100,height=100)
+      Question: What values of x/y in VB=(x,y,200,200) will keep the node centered?
+      Answer: TBH - I dont rememeber how I made it work XD
     */
     viewBox.x -= pointerPosOldCoords.x - viewBox.x;
     viewBox.y -= pointerPosOldCoords.y - viewBox.y;
@@ -79,8 +96,28 @@ function onMouseWheel(e) {
 svg.addEventListener('wheel', onMouseWheel);
 // Zooming section end
 
-let selectedCourseId = null;
-const selectedProgram = 'Computer Science';
+const universities = ['Concordia University', 'McGill University'];
+const programsByUniversity = {
+  'Concordia University': ['Computer Science'],
+  'McGill University': ['Computer Science', 'Software Engineering'],
+};
+const requirementsByUniversityProgram = {
+  'Concordia University': {
+    'Computer Science': {
+      requirement1: '',
+      requirement2: '',
+    },
+  },
+  'McGill University': {
+    'Computer Science': {
+      requirement1: '',
+    },
+    'Software Engineering': {
+      requirement1: '',
+    },
+  },
+};
+// TODO: courses by university program
 const courseInformationByCourseId = {
   COMP248: {
     courseName: 'The Course Name',
@@ -197,6 +234,8 @@ const courseSequenceState = {
     rankedCourseDesireability: ['courseA', 'courseB'],
   },
 };
+let selectedCourseId = null;
+const selectedProgram = 'Computer Science';
 
 function formatProgramInformation({
   'Program Name': programName,
@@ -297,7 +336,6 @@ function clickCourse(event) {
 
 function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
   // All in pixels
-  const circleRadius = window.getComputedStyle(document.body).getPropertyValue('--circle-radius').trimStart();
   document.getElementById('root-svg').innerHTML += `
         <svg
             course-id="${courseId}"
@@ -353,13 +391,6 @@ function addEdge(fromX, fromY, toX, toY, isPrereq) {
 
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(selectedProgram));
-  const circleRadius = Number(
-    window
-      .getComputedStyle(document.body)
-      .getPropertyValue('--circle-radius')
-      .trimStart()
-      .replace('px', ''),
-  );
 
   // Adding the nodes
   Object.entries(courseInformationByCourseId).forEach(([courseId, courseInformation]) => {
