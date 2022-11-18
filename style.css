@@ -128,10 +128,13 @@ p {
 /* ==== Schedule content start ==== */
 :root {
     --num-days: 7;
-    --num-columns: calc(var(--num-days) + 1); 
-    --hours-in-schedule-day: 9;
-    --timeslot-length-in-hours: 0.5;
-    --timeslot-count: calc(var(--hours-in-schedule-day) / var(--timeslot-length-in-hours))
+    --column-count: calc(var(--num-days) + 1); 
+    --column-width: calc(100%/var(--column-count));
+
+    --hours-in-schedule-day: 9.5; /*9am to 630pm*/
+    --timeslot-length-in-hours: 0.5; /*30 mins*/
+    --timeslot-count: calc(var(--hours-in-schedule-day) / var(--timeslot-length-in-hours));
+    --timeslot-height: calc(100%/var(--timeslot-count));
 }
 #schedule-content {
     position: relative;
@@ -151,14 +154,9 @@ p {
 }
 
 #schedule-content .course {
-    width: calc(100%/var(--num-columns));
-    margin-left: calc(100%/var(--num-columns));
+    width: var(--column-width);
+    margin-left: var(--column-width); /*One indexing for days*/
     background: red;
     position: absolute;
-    --day: 1;
-    --timeslot: 1; 
-    --re-indexed-timeslot: calc(var(--timeslot) - 1); /*Making the times one indexed*/
-    left: calc(100%/var(--num-columns) * var(--day));
-    top: calc(100%/var(--timeslot-count) * var(--re-indexed-timeslot))
 }
 /* ==== Schedule content end ==== */

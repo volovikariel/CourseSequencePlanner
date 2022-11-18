@@ -52,6 +52,15 @@
                 <span 
                     id="COMP233" 
                     class="course" 
+                    style="
+                    --day: 1;
+                    --timeslot-start: 1;
+                    --timeslot-end: 5; 
+                    --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
+                    --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
+                    height: calc(var(--timeslot-height) * var(--course-length)); 
+                    left: calc(var(--column-width) * var(--day));
+                    top: calc(var(--timeslot-height) * var(--timeslot-start))"
                     >COMP233</span>
             </div>
             </div>
