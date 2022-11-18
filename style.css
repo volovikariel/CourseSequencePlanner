@@ -126,10 +126,21 @@ p {
 }
 
 /* ==== Schedule content start ==== */
+:root {
+    --num-days: 7;
+    --num-columns: calc(var(--num-days) + 1); 
+    --hours-in-schedule-day: 9;
+    --timeslot-length-in-hours: 0.5;
+    --timeslot-count: calc(var(--hours-in-schedule-day) / var(--timeslot-length-in-hours))
+}
 #schedule-content {
+    position: relative;
+    width: 90%;
+}
+
+#schedule-content ul {
     padding: 0;
     margin: 0;
-    width: 90%;
     border: 1px solid rgb(85, 85, 85);
 }
 
@@ -139,4 +150,15 @@ p {
     border-bottom: 1px solid #AAEAEA;
 }
 
+#schedule-content .course {
+    width: calc(100%/var(--num-columns));
+    margin-left: calc(100%/var(--num-columns));
+    background: red;
+    position: absolute;
+    --day: 1;
+    --timeslot: 1; 
+    --re-indexed-timeslot: calc(var(--timeslot) - 1); /*Making the times one indexed*/
+    left: calc(100%/var(--num-columns) * var(--day));
+    top: calc(100%/var(--timeslot-count) * var(--re-indexed-timeslot))
+}
 /* ==== Schedule content end ==== */
