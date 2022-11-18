@@ -47,9 +47,11 @@ p {
 }
 
 #course-term-selector,
-#weekly-course-sechedule {
+#weekly-course-schedule {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 #course-information-container {
@@ -122,3 +124,19 @@ p {
 .panning {
     cursor: grabbing;
 }
+
+/* ==== Schedule content start ==== */
+#schedule-content {
+    padding: 0;
+    margin: 0;
+    width: 90%;
+    border: 1px solid rgb(85, 85, 85);
+}
+
+#schedule-content li {
+    list-style: none;
+    font-size: small;    
+    border-bottom: 1px solid #AAEAEA;
+}
+
+/* ==== Schedule content end ==== */
