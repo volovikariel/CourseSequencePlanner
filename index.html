@@ -8,6 +8,8 @@
     <title>Course Sequence Planner</title>
     <link rel="stylesheet" href="style.css">
     <script type="module" src="index.js" defer></script>
+    <script type="module" src="schedule.js" defer></script>
+
 </head>
 
 <body>
@@ -50,18 +52,9 @@
                     <li><span>18:00</span></li>
                 </ul>
                 <span 
-                    id="COMP233" 
+                    id="courses" 
                     class="course" 
-                    style="
-                    --day: 1;
-                    --timeslot-start: 1;
-                    --timeslot-end: 5; 
-                    --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
-                    --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
-                    height: calc(var(--timeslot-height) * var(--course-length)); 
-                    left: calc(var(--column-width) * var(--day));
-                    top: calc(var(--timeslot-height) * var(--timeslot-start))"
-                    >COMP233</span>
+                   ></span>
             </div>
             </div>
         </div>
