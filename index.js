@@ -100,7 +100,7 @@ class Student {
 
 function formatProgramInformation(university, program) {
   const { creditRequirements } = universityDatabase[university][program];
-  const formattedElectives = Object.entries(creditRequirements).map(
+  const formattedCreditRequirements = Object.entries(creditRequirements).map(
     ([electiveName, { completed, need }]) => `
         <div>
             <p>${electiveName}:</p>
@@ -111,7 +111,7 @@ function formatProgramInformation(university, program) {
   return `
         <span><span class="program">Program name:</span> ${program}</span>
         <p><span class="graduation">Graduation Requirements</span></p>
-        <div style="display: flex; flex-direction: column;">${formattedElectives.join('')}</div>
+        <div style="display: flex; flex-direction: column;">${formattedCreditRequirements.join('')}</div>
     `;
 }
 
