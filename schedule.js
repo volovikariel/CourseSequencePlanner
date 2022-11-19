@@ -34,20 +34,19 @@ function translateDay(courseCode) {
   // format weekday bools to numbers for timeslots
   const course = getCourseSchedule(courseCode);
   const weekdays = [course.mon, course.tue, course.wed, course.thu, course.fri];
-  const weekdaysNum = [];
-  for (let i = 0; i < weekdays.length; i++) {
-    if (weekdays[i] == true) {
-      weekdaysNum.push(i);
-    }
-  }
+  const weekdaysNum = weekdays.reduce((accumulator, currentValue, currentIndex) => {
+    if (currentValue === true) accumulator.push(currentIndex);
+    return accumulator;
+  }, []);
   return weekdaysNum;
 }
 
 function translateTime(hhmm) {
-  // Format time to numbers for 'slices' of timeslots, goes from 9am to 630pm (9.5 hours) in 30min intervals,
+  // Format time to numbers for 'slices' of timeslots
+  // goes from 9am to 630pm (9.5 hours) in 30min intervals,
   // Meaning that 9 is the first timeslot = 0 , 9:30 => 1, 9:45 => 1.5, 10 => 2, etc.
-  const hours = parseInt(hhmm.split(':')[0]);
-  const minutes = parseInt(hhmm.split(':')[1]) / 60;
+  const hours = parseInt(hhmm.split(':')[0], 10);
+  const minutes = parseInt(hhmm.split(':')[1], 10) / 60;
   const time = hours + minutes;
   let x;
 
@@ -72,22 +71,20 @@ function addSelectedCourseToSchedule(courseCode) {
   const startTime = times[0];
   const endTime = times[1];
 
-  for (let i = 0; i < days.length; i++) {
-    const day = days[i];
-
+  days.forEach((day) => {
     // Add the course to the schedule
     document.getElementById('courses').innerHTML += ` 
-        style="
-        --day: "${day}"; 
-        --timeslot-start: "${startTime}";
-        --timeslot-end: "${endTime}"; 
-        --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
-        --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
-        height: calc(var(--timeslot-height) * var(--course-length)); 
-        left: calc(var(--column-width) * var(--day));
-        top: calc(var(--timeslot-height) * var(--timeslot-start))"
-        "${course.courseCode}`;
-  }
+    style="
+    --day: "${day}"; 
+    --timeslot-start: "${startTime}";
+    --timeslot-end: "${endTime}"; 
+    --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
+    --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
+    height: calc(var(--timeslot-height) * var(--course-length)); 
+    left: calc(var(--column-width) * var(--day));
+    top: calc(var(--timeslot-height) * var(--timeslot-start))"
+    "${course.courseCode}`;
+  });
 }
 
 // Lets say they selected 248 and 249
