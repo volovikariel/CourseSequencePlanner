@@ -8,7 +8,28 @@ const programsByUniversityDatabase = {
 const universityDatabase = {
   'Concordia University': {
     'Computer Science': {
-      requirement1: '',
+      creditRequirements: {
+        'Computer science core': {
+          completed: 0,
+          need: 33,
+        },
+        'Complementary core': {
+          completed: 0,
+          need: 6,
+        },
+        'Computer science electives': {
+          completed: 0,
+          need: 18,
+        },
+        'Mathematics electives': {
+          completed: 0,
+          need: 6,
+        },
+        'Minor and general electives': {
+          completed: 0,
+          need: 27,
+        },
+      },
       requirement2: '',
     },
   },
@@ -77,11 +98,9 @@ class Student {
   }
 }
 
-function formatProgramInformation({
-  'Program Name': programName,
-  electives,
-}) {
-  const formattedElectives = Object.entries(electives).map(
+function formatProgramInformation(university, program) {
+  const { creditRequirements } = universityDatabase[university][program];
+  const formattedElectives = Object.entries(creditRequirements).map(
     ([electiveName, { completed, need }]) => `
         <div>
             <p>${electiveName}:</p>
@@ -90,41 +109,10 @@ function formatProgramInformation({
         `,
   );
   return `
-        <span><span class="program">Program name:</span> ${programName}</span>
+        <span><span class="program">Program name:</span> ${program}</span>
         <p><span class="graduation">Graduation Requirements</span></p>
         <div style="display: flex; flex-direction: column;">${formattedElectives.join('')}</div>
     `;
-}
-
-function getProgramInformation(program) {
-  const programInformation = {
-    'Computer Science': {
-      'Program Name': 'Computer Science',
-      electives: {
-        'Computer science core': {
-          completed: 0,
-          need: 33,
-        },
-        'Complementary core': {
-          completed: 0,
-          need: 6,
-        },
-        'Computer science electives': {
-          completed: 0,
-          need: 18,
-        },
-        'Mathematics electives': {
-          completed: 0,
-          need: 6,
-        },
-        'Minor and general electives': {
-          completed: 0,
-          need: 27,
-        },
-      },
-    },
-  };
-  return programInformation[program];
 }
 
 function formatCourseInformation({ courseName, courseCode, information }) {
@@ -152,7 +140,7 @@ export const student = new Student(
   new Set(['COMP249']),
 );
 function setup() {
-  document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(student.program));
+  document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
   setupNodegraph();
 }
 

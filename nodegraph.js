@@ -279,6 +279,7 @@ function setCourseSelected(courseId, isSelected) {
     courseCircle.classList.add('selected');
   } else {
     courseCircle.classList.remove('selected');
+    setCourseInformation(null);
   }
 }
 
