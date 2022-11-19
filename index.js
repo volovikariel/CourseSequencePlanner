@@ -1,11 +1,11 @@
+/* eslint-disable no-prototype-builtins */
 import { setupNodegraph } from './nodegraph.js';
 
-const universities = ['Concordia University', 'McGill University'];
-const programsByUniversity = {
-  'Concordia University': ['Computer Science'],
-  'McGill University': ['Computer Science', 'Software Engineering'],
+const programsByUniversityDatabase = {
+  'Concordia University': new Set(['Computer Science']),
+  'McGill University': new Set(['Computer Science', 'Software Engineering']),
 };
-const requirementsByUniversityProgram = {
+const universityDatabase = {
   'Concordia University': {
     'Computer Science': {
       requirement1: '',
@@ -21,31 +21,61 @@ const requirementsByUniversityProgram = {
     },
   },
 };
-const courseSequenceState = {
-  university: {
-    universityName: undefined,
-  },
-  program: {
-    programName: undefined,
-    programRequirements: undefined,
-  },
-  userState: {
-    externalRequirementsCompleted: undefined,
-    termStates: {
-      termA: {
-        taken: true, // if true, then term has already passed, can't change past, else, can change
-        courses: undefined,
-      },
-      termB: {
-        taken: false,
-        courses: undefined,
-      },
-    },
-    // Ranked in ascending order
-    rankedCourseDesireability: ['courseA', 'courseB'],
-  },
-};
-const selectedProgram = 'Computer Science';
+export const currYear = 2022;
+export const currTerm = 'fall';
+class Student {
+  constructor(
+    university,
+    program,
+    completedCourses,
+    desiredCourses = new Set(),
+    otherRequirementCompletion = new Set(),
+  ) {
+    const universities = Object.keys(universityDatabase);
+    if (!universities.includes(university)) throw new Error('invalid university passed in');
+    this.university = university;
+
+    const universityPrograms = programsByUniversityDatabase[university];
+    if (!universityPrograms.has(program)) throw new Error('invalid program passed in');
+    this.program = program;
+
+    this.completedCourses = completedCourses;
+    this.desiredCourses = desiredCourses;
+    this.otherRequirementCompletion = otherRequirementCompletion;
+  }
+
+  addCourseToCompleted(course, year, term) {
+    if (!this.completedCourses.hasOwnProperty(year)
+    || !this.completedCourses[year].hasOwnProperty(term)) {
+      this.completedCourses[year] = {
+        [term]: new Set(),
+      };
+    }
+    this.completedCourses[year][term].add(course);
+  }
+
+  removeCourseFromCompleted(course, year, term) {
+    if (!this.completedCourses.hasOwnProperty(year)
+    || !this.completedCourses[year].hasOwnProperty(term)) {
+      throw new Error('Trying to remove course from year or term that doesn\'t exist for User');
+    }
+    this.completedCourses[year][term].remove(course);
+  }
+
+  addDesiredCourse(course) {
+    this.desiredCourses.add(course);
+    const courseNode = document.querySelector(`[course-id=${course}]`);
+    const courseCircle = courseNode.querySelector('.circle');
+    courseCircle.classList.add('desireable');
+  }
+
+  removeDesiredCourse(course) {
+    this.desiredCourses.delete(course);
+    const courseNode = document.querySelector(`[course-id=${course}]`);
+    const courseCircle = courseNode.querySelector('.circle');
+    courseCircle.classList.remove('desireable');
+  }
+}
 
 function formatProgramInformation({
   'Program Name': programName,
@@ -113,8 +143,16 @@ export default function setCourseInformation(courseInformation) {
   }
 }
 
+const university = 'Concordia University';
+const program = 'Computer Science';
+export const student = new Student(
+  university,
+  program,
+  undefined,
+  new Set(['COMP249']),
+);
 function setup() {
-  document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(selectedProgram));
+  document.getElementById('program-information-content').innerHTML = formatProgramInformation(getProgramInformation(student.program));
   setupNodegraph();
 }
 

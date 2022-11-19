@@ -78,11 +78,7 @@ p {
     font-weight: bold;
 }
 
-.selected {
-    fill: lightgoldenrodyellow !important;
-}
-
-#circle {
+.circle {
     stroke: black;
     stroke-width: 3px;
     fill: white;
@@ -90,7 +86,27 @@ p {
     clip-path: url(#clip-path);
 }
 
-#circle,
+.circle.selected {
+    fill: lightgoldenrodyellow;
+}
+
+.circle.desireable {
+    stroke: hsl(37, 91%, 44%);
+    stroke-width: 10px;
+    stroke-dasharray: var(--circle-radius);
+    animation: spin 3s linear infinite;
+    /*These are needed to make the transformations relative to the center of the circle*/
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+@keyframes spin {
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.circle,
 #clip-path-circle {
     cx: var(--circle-radius);
     cy: var(--circle-radius);
@@ -118,10 +134,11 @@ p {
 #root-svg {
     background-color: rgb(85, 85, 85);
 }
-.can-pan {
+
+#root-svg.can-pan {
     cursor: grab;
 }
-.panning {
+#root-svg.panning {
     cursor: grabbing;
 }
 

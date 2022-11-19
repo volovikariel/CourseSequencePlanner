@@ -1,4 +1,4 @@
-import setCourseInformation from './index.js';
+import setCourseInformation, { student } from './index.js';
 
 export const circleRadius = Number(
   window
@@ -13,6 +13,12 @@ let isPointerDown = false;
 let pointerOrigin;
 
 let selectedCourseId = null;
+
+const mouseButtonByType = {
+  1: 'left',
+  2: 'middle',
+  3: 'right',
+};
 
 // TODO: courses by university program
 const courseInformationByCourseId = {
@@ -123,6 +129,9 @@ function convertPosToSvg(x, y) {
 function setupPanning() {
   // This section handles panning the node-graph by clicking and moving the mouse around
   function onMouseDown(e) {
+    const mouseButtonClicked = mouseButtonByType[e.which];
+    // If it's not a left click, don't initiate panning
+    if (mouseButtonClicked !== 'left') return;
     isPointerDown = true;
     // Define new 'pan sequence' pointer orign
     pointerOrigin = convertPosToSvg(e.clientX, e.clientY);
@@ -199,7 +208,6 @@ function setupZooming() {
 }
 
 function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
-  // All in pixels
   document.getElementById('root-svg').innerHTML += `
         <svg
             course-id="${courseId}"
@@ -213,13 +221,20 @@ function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
                     <circle id="clip-path-circle"/>
                 </clipPath>
             </defs>
-            <circle id="circle"/>
-            <!--Offset the text by the same amount that the circle radius, so as to have it centered-->
-            <!-- NOTE: Can use foreign object instead of <text> (this'll allow us to place native HTML elements inside) -->
-        <text class="course-text" x="${circleRadius}" y="${circleRadius}" text-anchor="middle"
-                dominant-baseline="central">${courseId}</text>
-        </svg>
-            `;
+            <g class="circle-group">
+              <circle class="circle"/>
+              <!--Offset the text by the same amount that the circle radius, so as to have it centered-->
+              <text 
+                class="course-text" 
+                x="${circleRadius}" 
+                y="${circleRadius}" 
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                ${courseId}
+              </text>
+            </g>
+        </svg>`;
 }
 
 // isPrereq = true: prereq
@@ -259,8 +274,7 @@ function setCourseSelected(courseId, isSelected) {
     setCourseInformation(null);
     return;
   }
-  const courseNode = document.querySelector(`[course-id=${courseId}]`);
-  const courseCircle = courseNode.getElementById('circle');
+  const courseCircle = document.querySelector(`[course-id=${courseId}] .circle`);
   if (isSelected) {
     courseCircle.classList.add('selected');
   } else {
@@ -273,17 +287,34 @@ function getCourseInformation(courseId) {
 }
 
 function clickCourse(event) {
-  // Clearing previous one
-  if (selectedCourseId) {
-    setCourseSelected(selectedCourseId, false);
-  }
+  const mouseButtonClicked = mouseButtonByType[event.which];
   const {
-    target: { parentElement: courseNode },
+    target: { parentElement: { parentElement: courseNode } },
   } = event;
   selectedCourseId = courseNode.getAttribute('course-id');
-  setCourseSelected(selectedCourseId, true);
-  setCourseInformation(getCourseInformation(selectedCourseId));
+  if (mouseButtonClicked === 'left') {
+    // Clearing previous one
+    if (selectedCourseId) {
+      setCourseSelected(selectedCourseId, false);
+    }
+
+    setCourseSelected(selectedCourseId, true);
+    setCourseInformation(getCourseInformation(selectedCourseId));
+  } else if (mouseButtonClicked === 'right') {
+    const courseCircle = courseNode.querySelector('.circle');
+    if (courseCircle.classList.contains('desireable')) {
+      student.removeDesiredCourse(selectedCourseId);
+    } else {
+      student.addDesiredCourse(selectedCourseId);
+    }
+  }
+  // Stop the root-svg's onClick from firing
   event.stopPropagation();
+}
+
+function hideContextMenu(event) {
+  // Stop context menu from showing up
+  event.preventDefault();
 }
 
 export function setupNodegraph() {
@@ -347,11 +378,14 @@ export function setupNodegraph() {
 
       // Adding event listeners
       document.querySelectorAll('.course-node').forEach((courseNode) => {
-        courseNode.addEventListener('click', clickCourse);
+        courseNode.addEventListener('mousedown', clickCourse);
+        courseNode.addEventListener('contextmenu', hideContextMenu);
       });
-
-      document.getElementById('root-svg').addEventListener('click', () => {
-        setCourseSelected(selectedCourseId, false);
+      const rootSvg = document.getElementById('root-svg');
+      rootSvg.addEventListener('mousedown', (event) => {
+        const mouseButtonClicked = mouseButtonByType[event.which];
+        if (mouseButtonClicked === 'left') setCourseSelected(selectedCourseId, false);
       });
+      rootSvg.addEventListener('contextmenu', hideContextMenu);
     });
 }
