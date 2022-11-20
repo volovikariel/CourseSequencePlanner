@@ -1,5 +1,5 @@
 :root {
-  --circle-radius: 50px;
+    --circle-radius: 50px;
 }
 
 html,
@@ -10,37 +10,38 @@ body {
 }
 
 p {
-  margin: 0;
+    margin: 0;
 }
 
 #root-container {
-  /* Make the grid fit the entire page */
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  /* Define the grid as having:display:
+    /* Make the grid fit the entire page */
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    /* Define the grid as having:display:
      - 2 columns (with one being 3 times as large as the other)
      - 3 equally sized rows
     */
-  grid-template-columns: auto 30%;
-  grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: auto 30%;
+    grid-template-rows: repeat(3, 1fr);
 
-  /* Specify which element occupies which row/column */
-  grid-template-areas:
-    "node-graph term-selector-container"
-    "node-graph course-information-container"
-    "node-graph program-information-container";
+    /* Specify which element occupies which row/column */
+    grid-template-areas:
+        "node-graph term-selector-container"
+        "node-graph course-information-container"
+        "node-graph program-information-container";
 }
 
 #node-graph-container {
-  grid-area: node-graph;
+    grid-area: node-graph;
 }
 
 #term-selector-container {
-  grid-area: term-selector-container;
-  display: grid;
-  grid-auto-columns: 1fr 1fr;
+    grid-area: term-selector-container;
+    display: grid;
+    grid-auto-columns: 1fr 1fr;
 }
+
 
 
 /* #term-selector-container > div {
@@ -62,8 +63,8 @@ p {
   overflow-y: auto;
   padding: 5% 5%;
   height: fit-content;
-
 }
+
 #course-information-content {
   color:black;
 }
@@ -73,52 +74,123 @@ p {
   display: flex;
   flex-direction: column;
   padding: 5% 5%;
+  color: indigo;
 }
 
 
 .section-title {
+
   align-self: center;
   color:purple;
   font-weight: bold;
   font-size: 1.5em;
   padding-bottom: 0.5em;
+  align-self: center;
+  color: blue;
+  font-weight: bold;
 }
 
-.selected {
-  fill: lightgoldenrodyellow !important;
+.circle {
+    stroke: black;
+    stroke-width: 3px;
+    fill: white;
+    paint-order: fill;
+    clip-path: url(#clip-path);
 }
 
-#circle {
-  stroke: black;
-  stroke-width: 3px;
-  fill: white;
-  paint-order: fill;
-  clip-path: url(#clip-path);
+.circle.selected {
+    fill: lightgoldenrodyellow;
 }
 
-#circle,
+.circle.desireable {
+    stroke: hsl(37, 91%, 44%);
+    stroke-width: 10px;
+    stroke-dasharray: var(--circle-radius);
+    animation: spin 3s linear infinite;
+    /*These are needed to make the transformations relative to the center of the circle*/
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+@keyframes spin {
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.circle,
 #clip-path-circle {
-  cx: var(--circle-radius);
-  cy: var(--circle-radius);
-  r: var(--circle-radius);
+    cx: var(--circle-radius);
+    cy: var(--circle-radius);
+    r: var(--circle-radius);
 }
+
 .coursename {
-  color: black;
-  font-weight: bold;
+    color: black;
+    font-weight: bold;
 }
+
 .coursecode {
-  color: black;
-  font-weight: bold;
+    color: black;
+    font-weight: bold;
 }
+
 .program {
-  font-weight: bold;
+    font-weight: bold;
 }
+
 .graduation {
-  font-weight: bold;
+    font-weight: bold;
 }
+
 #root-svg {
-  background-color: rgb(85, 85, 85);
+    background-color: rgb(85, 85, 85);
 }
+
+#root-svg.can-pan {
+    cursor: grab;
+}
+#root-svg.panning {
+    cursor: grabbing;
+}
+
+/* ==== Schedule content start ==== */
+:root {
+    --num-days: 7;
+    --column-count: calc(var(--num-days) + 1); 
+    --column-width: calc(100%/var(--column-count));
+
+    --hours-in-schedule-day: 9.5; /*9am to 630pm*/
+    --timeslot-length-in-hours: 0.5; /*30 mins*/
+    --timeslot-count: calc(var(--hours-in-schedule-day) / var(--timeslot-length-in-hours));
+    --timeslot-height: calc(100%/var(--timeslot-count));
+}
+
+#schedule-content {
+    position: relative;
+    width: 90%;
+}
+
+#schedule-content ul {
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgb(85, 85, 85);
+}
+
+#schedule-content li {
+    list-style: none;
+    font-size: small;    
+    border-bottom: 1px solid #AAEAEA;
+}
+
+#schedule-content .course {
+    width: var(--column-width);
+    margin-left: var(--column-width); /*One indexing for days*/
+    background: red;
+    position: absolute;
+}
+/* ==== Schedule end start ==== */
+
 .title {
   color: blueviolet;
   font-weight: bold;
@@ -148,3 +220,4 @@ p {
 .button:active {
   background-color:orangered;
 }
+

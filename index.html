@@ -7,13 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Sequence Planner</title>
     <link rel="stylesheet" href="style.css">
-    <script src="index.js" defer></script>
+    <script type="module" src="index.js" defer></script>
 </head>
 
 <body>
     <div id="root-container">
         <div id="node-graph-container">
-            <svg id="root-svg" width="100%" height="100%">
+            <svg id="root-svg"
+                class="can-pan" 
+                width="100%" 
+                height="100%" 
+                viewBox="0 0 1500 1000" 
+                preserveAspectRatio="xMinYMin slice">
             </svg>
         </div>
         <div id="term-selector-container">
@@ -22,8 +27,44 @@
                 <button class="button">Summer</button>
                 <button class="button">Fall</button>
             </div>
-            <div id="weekly-course-sechedule">
+            <div id="weekly-course-schedule">
                 <p class="section-title">Schedule</p>
+            <div id="schedule-content">
+                <ul>
+                    <li><span>09:00</span></li>
+                    <li><span>09:30</span></li>
+                    <li><span>10:00</span></li>
+                    <li><span>10:30</span></li>
+                    <li><span>11:00</span></li>
+                    <li><span>11:30</span></li>
+                    <li><span>12:00</span></li>
+                    <li><span>12:30</span></li>
+                    <li><span>13:00</span></li>
+                    <li><span>13:30</span></li>
+                    <li><span>14:00</span></li>
+                    <li><span>14:30</span></li>
+                    <li><span>15:00</span></li>
+                    <li><span>15:30</span></li>
+                    <li><span>16:00</span></li>
+                    <li><span>16:30</span></li>
+                    <li><span>17:00</span></li>
+                    <li><span>17:30</span></li>
+                    <li><span>18:00</span></li>
+                </ul>
+                <span 
+                    id="COMP233" 
+                    class="course" 
+                    style="
+                    --day: 1;
+                    --timeslot-start: 1;
+                    --timeslot-end: 5; 
+                    --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
+                    --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
+                    height: calc(var(--timeslot-height) * var(--course-length)); 
+                    left: calc(var(--column-width) * var(--day));
+                    top: calc(var(--timeslot-height) * var(--timeslot-start))"
+                    >COMP233</span>
+            </div>
             </div>
         </div>
         <div id="course-information-container">
