@@ -253,8 +253,8 @@ function getCourseInformation(courseId) {
 
 function formatCourseInformation({ courseName, courseCode, information }) {
     return `
-            <span>Course name: ${courseName}</span>
-            <p>Course Code: ${courseCode}</p>
+            <span><span class="title">Course Name: </span>${courseName}</span>
+            <p><span class="title">Course Code:</span> ${courseCode}</p>
             <p>${information}</p>
     `
 }
@@ -305,8 +305,8 @@ function formatProgramInformation({
         }
     );
     return `
-        <span>Program name: ${programName}</span>
-        <p>Graduation Requirements</p>
+        <span><span class="title">Program Name:</span> ${programName}</span>
+        <p><span class="title">Graduation Requirements</span></p>
         <div style="display: flex; flex-direction: column;">${formattedElectives.join(
         ""
     )}</div>
