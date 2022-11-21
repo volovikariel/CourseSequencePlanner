@@ -144,7 +144,7 @@ p {
 
 /* ==== Schedule content start ==== */
 :root {
-    --num-days: 7;
+    --num-days: 5;
     --column-count: calc(var(--num-days) + 1); 
     --column-width: calc(100%/var(--column-count));
 
@@ -173,7 +173,10 @@ p {
 #schedule-content .course {
     width: var(--column-width);
     margin-left: var(--column-width); /*One indexing for days*/
-    background: red;
     position: absolute;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+
 }
 /* ==== Schedule content end ==== */

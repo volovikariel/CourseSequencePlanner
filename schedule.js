@@ -4,10 +4,10 @@ const courseScheduleInfo = {
     courseCode: 'COMP248',
     startTime: '10:00',
     endTime: '18:30',
-    mon: true,
-    tue: false,
-    wed: true,
-    thu: false,
+    mon: false,
+    tue: true,
+    wed: false,
+    thu: true,
     fri: false,
   },
   COMP249: {
@@ -23,8 +23,8 @@ const courseScheduleInfo = {
   },
 };
 
-// How do I use this to modify the css
-const colors = ['#ff0000', '#d1a94c', '#118ab2', '#06d6a0'];
+// https://coolors.co/392f5a-d1a94c-118ab2-06d6a0-757755-e3170a
+const colors = ['#E3170A', '#d1a94c', '#118ab2', '#06d6a0', '#392F5A', '#023618'];
 
 function getCourseSchedule(courseCode) {
   return courseScheduleInfo[courseCode];
@@ -34,10 +34,13 @@ function translateDay(courseCode) {
   // format weekday bools to numbers for timeslots
   const course = getCourseSchedule(courseCode);
   const weekdays = [course.mon, course.tue, course.wed, course.thu, course.fri];
-  const weekdaysNum = weekdays.reduce((accumulator, currentValue, currentIndex) => {
-    if (currentValue === true) accumulator.push(currentIndex);
-    return accumulator;
-  }, []);
+  const weekdaysNum = weekdays.reduce(
+    (accumulator, currentValue, currentIndex) => {
+      if (currentValue === true) accumulator.push(currentIndex);
+      return accumulator;
+    },
+    [],
+  );
   return weekdaysNum;
 }
 
@@ -56,6 +59,12 @@ function translateTime(hhmm) {
   return x;
 }
 
+function assignCourseBlockColor() {
+  const random = Math.floor(Math.random() * colors.length);
+  // Mutates original array, still returns removed element(s) as a list
+  return colors.splice(random, 1);
+}
+
 function translateTimeForSlots(courseCode) {
   const course = getCourseSchedule(courseCode);
   const timeSlotStart = translateTime(course.startTime);
@@ -70,20 +79,24 @@ function addSelectedCourseToSchedule(courseCode) {
   const times = translateTimeForSlots(courseCode);
   const startTime = times[0];
   const endTime = times[1];
+  const bg = assignCourseBlockColor(courseCode)[0];
 
   days.forEach((day) => {
     // Add the course to the schedule
-    document.getElementById('courses').innerHTML += ` 
-    style="
-    --day: "${day}"; 
-    --timeslot-start: "${startTime}";
-    --timeslot-end: "${endTime}"; 
+    document.getElementById('schedule-content').innerHTML += ` 
+    <span class = 'course'
+    style='
+    background-color: ${bg};
+    --day: ${day}; 
+    --timeslot-start: ${startTime};
+    --timeslot-end: ${endTime}; 
     --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
     --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
     height: calc(var(--timeslot-height) * var(--course-length)); 
     left: calc(var(--column-width) * var(--day));
-    top: calc(var(--timeslot-height) * var(--timeslot-start))"
-    "${course.courseCode}`;
+    top: calc(var(--timeslot-height) * var(--timeslot-start))'>
+
+    ${course.courseCode} </span> `;
   });
 }
 
