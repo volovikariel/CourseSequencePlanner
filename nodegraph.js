@@ -292,11 +292,12 @@ function clickCourse(event) {
   const {
     target: { parentElement: { parentElement: courseNode } },
   } = event;
+  const previouslySelectedCourse = selectedCourseId;
   selectedCourseId = courseNode.getAttribute('course-id');
   if (mouseButtonClicked === 'left') {
     // Clearing previous one
-    if (selectedCourseId) {
-      setCourseSelected(selectedCourseId, false);
+    if (previouslySelectedCourse) {
+      setCourseSelected(previouslySelectedCourse, false);
     }
 
     setCourseSelected(selectedCourseId, true);
