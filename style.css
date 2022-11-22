@@ -156,7 +156,7 @@ p {
 
 /* ==== Schedule content start ==== */
 :root {
-    --num-days: 7;
+    --num-days: 5;
     --column-count: calc(var(--num-days) + 1); 
     --column-width: calc(100%/var(--column-count));
 
@@ -180,14 +180,20 @@ p {
 #schedule-content li {
     list-style: none;
     font-size: small;    
-    border-bottom: 1px solid #AAEAEA;
+    border-bottom: 1px solid hwb(218 71% 2%);
 }
 
 #schedule-content .course {
     width: var(--column-width);
     margin-left: var(--column-width); /*One indexing for days*/
-    background: red;
     position: absolute;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: "Lexend Deca", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
 }
 /* ==== Schedule end start ==== */
 
