@@ -1,10 +1,11 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-import { setupNodegraph } from './nodegraph.js';
+import { setupNodegraph, courseInformationByCourseId } from './nodegraph.js';
+import {
+  getCourseSchedule, intersectSchedules, isCourseOffered,
+} from './schedule.js';
 
-const programsByUniversityDatabase = {
-  'Concordia University': new Set(['Computer Science']),
-  'McGill University': new Set(['Computer Science', 'Software Engineering']),
-};
 const universityDatabase = {
   'Concordia University': {
     'Computer Science': {
@@ -30,7 +31,7 @@ const universityDatabase = {
           need: 27,
         },
       },
-      requirement2: '',
+      courses: ['COMP248', 'COMP249'],
     },
   },
   'McGill University': {
@@ -48,7 +49,7 @@ class Student {
   constructor(
     university,
     program,
-    completedCourses,
+    futureCourses = {},
     desiredCourses = new Set(),
     otherRequirementCompletion = new Set(),
   ) {
@@ -56,31 +57,101 @@ class Student {
     if (!universities.includes(university)) throw new Error('invalid university passed in');
     this.university = university;
 
-    const universityPrograms = programsByUniversityDatabase[university];
+    const universityPrograms = new Set(Object.keys(universityDatabase[university]));
     if (!universityPrograms.has(program)) throw new Error('invalid program passed in');
     this.program = program;
 
-    this.completedCourses = completedCourses;
+    this.futureCourses = futureCourses;
     this.desiredCourses = desiredCourses;
     this.otherRequirementCompletion = otherRequirementCompletion;
+    this.schedules = [];
   }
 
-  addCourseToCompleted(course, year, term) {
-    if (!this.completedCourses.hasOwnProperty(year)
-    || !this.completedCourses[year].hasOwnProperty(term)) {
-      this.completedCourses[year] = {
+  setSchedules(schedules) {
+    this.schedules = schedules;
+    // TODO: send schedules to be displayed by Ant1
+  }
+
+  haveCourseRequisitesForCourse(course, yearUpperBound, termUpperBound) {
+    const termIndexByTerm = {
+      winter: 0,
+      summer: 1,
+      fall: 2,
+    };
+    // All completed courses by year/term
+    const completedCourses = new Set();
+
+    let passedUpperBounds = false;
+    for (const year of Object.keys(this.futureCourses)) {
+      if (year > yearUpperBound || passedUpperBounds) break;
+      for (const term of Object.keys(this.futureCourses[year])) {
+        // We don't want to take into account courses taken THIS semester for the prerequisites
+        // So we don't even want to be on the upperbound
+        // e.g: if we curr term is w22, then we will markall courses taken BEFORE w22 as completed
+        if (year === yearUpperBound && termIndexByTerm[term] >= termIndexByTerm[termUpperBound]) {
+          passedUpperBounds = true;
+          break;
+        }
+        for (const completedCourse of this.futureCourses[year][term]) {
+          completedCourses.add(completedCourse);
+        }
+      }
+    }
+
+    const coursePrerequisites = courseInformationByCourseId[course].prereqs;
+    for (const coursePrerequisite of coursePrerequisites) {
+      if (!completedCourses.has(coursePrerequisite)) {
+        return false;
+      }
+    }
+
+    const courseCorequisites = courseInformationByCourseId[course].coreqs;
+    for (const courseCorequisite of courseCorequisites) {
+      if (!completedCourses.has(courseCorequisite)
+      // Also take into account the year/term of addition
+      && !this.futureCourses[yearUpperBound][termUpperBound].has(courseCorequisite)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  addCourseToFuture(course, year, term) {
+    if (!Object.hasOwn(this.futureCourses, year)
+    || !Object.hasOwn(this.futureCourses[year], term)) {
+      this.futureCourses[year] = {
         [term]: new Set(),
       };
     }
-    this.completedCourses[year][term].add(course);
+
+    if (!isCourseOffered(course, year, term)) {
+      throw new Error(`${course} is not offered during ${year} ${term}`);
+    }
+    if (!this.haveCourseRequisitesForCourse(course, year, term)) {
+      throw new Error(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term}`);
+    }
+    const validSchedules = intersectSchedules(
+      this.schedules,
+      getCourseSchedule(course, currYear, currTerm),
+    );
+    if (validSchedules.length === 0) {
+      throw new Error(`${course} clashes with your current schedule`);
+    }
+    // TODO: reflect in GUI
+    this.futureCourses[year][term].add(course);
+    document.querySelector(`[course-id=${course}] .circle`).classList.add('future');
+    this.setSchedules(validSchedules);
   }
 
-  removeCourseFromCompleted(course, year, term) {
-    if (!this.completedCourses.hasOwnProperty(year)
-    || !this.completedCourses[year].hasOwnProperty(term)) {
+  removeCourseFromFuture(course, year, term) {
+    if (!Object.hasOwn(this.futureCourses, year)
+    || !Object.hasOwn(this.futureCourses[year], term)) {
       throw new Error('Trying to remove course from year or term that doesn\'t exist for User');
     }
-    this.completedCourses[year][term].remove(course);
+    this.futureCourses[year][term].delete(course);
+    document.querySelector(`[course-id=${course}] .circle`).classList.remove('future');
+    this.setSchedules(this.schedules.filter((validCourse) => validCourse.courseCode !== course));
   }
 
   addDesiredCourse(course) {
@@ -99,11 +170,11 @@ class Student {
 }
 
 function formatCourseInformation({ courseName, courseCode, information }) {
-    return `
+  return `
             <span><span class="title">Course Name: </span>${courseName}</span>
             <p><span class="title">Course Code:</span> ${courseCode}</p>
             <p>${information}</p>
-    `
+    `;
 }
 function formatProgramInformation(university, program) {
   const { creditRequirements } = universityDatabase[university][program];
@@ -121,7 +192,6 @@ function formatProgramInformation(university, program) {
         <div style="display: flex; flex-direction: column;">${formattedCreditRequirements.join('')}</div>
     `;
 }
-
 
 export default function setCourseInformation(courseInformation) {
   if (typeof courseInformation === 'undefined' || courseInformation == null) {

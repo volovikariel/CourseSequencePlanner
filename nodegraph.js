@@ -1,4 +1,4 @@
-import setCourseInformation, { student } from './index.js';
+import setCourseInformation, { currTerm, currYear, student } from './index.js';
 
 export const circleRadius = Number(
   window
@@ -12,8 +12,6 @@ const viewBox = svg.viewBox.baseVal;
 let isPointerDown = false;
 let pointerOrigin;
 
-let selectedCourseId = null;
-
 const mouseButtonByType = {
   1: 'left',
   2: 'middle',
@@ -21,7 +19,7 @@ const mouseButtonByType = {
 };
 
 // TODO: courses by university program
-const courseInformationByCourseId = {
+export const courseInformationByCourseId = {
   COMP248: {
     courseName: 'The Course Name',
     courseCode: 'COMP248',
@@ -268,21 +266,6 @@ function addEdge(fromX, fromY, toX, toY, isPrereq) {
         `;
 }
 
-function setCourseSelected(courseId, isSelected) {
-  if (typeof courseId === 'undefined' || courseId == null) {
-    selectedCourseId = null;
-    setCourseInformation(null);
-    return;
-  }
-  const courseCircle = document.querySelector(`[course-id=${courseId}] .circle`);
-  if (isSelected) {
-    courseCircle.classList.add('selected');
-  } else {
-    courseCircle.classList.remove('selected');
-    setCourseInformation(null);
-  }
-}
-
 function getCourseInformation(courseId) {
   return courseInformationByCourseId[courseId];
 }
@@ -292,26 +275,31 @@ function clickCourse(event) {
   const {
     target: { parentElement: { parentElement: courseNode } },
   } = event;
-  const previouslySelectedCourse = selectedCourseId;
-  selectedCourseId = courseNode.getAttribute('course-id');
+  const courseId = courseNode.getAttribute('course-id');
+  const courseCircle = courseNode.querySelector('.circle');
   if (mouseButtonClicked === 'left') {
-    // Clearing previous one
-    if (previouslySelectedCourse) {
-      setCourseSelected(previouslySelectedCourse, false);
-    }
-
-    setCourseSelected(selectedCourseId, true);
-    setCourseInformation(getCourseInformation(selectedCourseId));
-  } else if (mouseButtonClicked === 'right') {
-    const courseCircle = courseNode.querySelector('.circle');
-    if (courseCircle.classList.contains('desireable')) {
-      student.removeDesiredCourse(selectedCourseId);
+    if (courseCircle.classList.contains('future')) {
+      student.removeCourseFromFuture(courseId, currYear, currTerm);
     } else {
-      student.addDesiredCourse(selectedCourseId);
+      student.addCourseToFuture(courseId, currYear, currTerm);
+    }
+  } else if (mouseButtonClicked === 'right') {
+    if (courseCircle.classList.contains('desireable')) {
+      student.removeDesiredCourse(courseId);
+    } else {
+      student.addDesiredCourse(courseId);
     }
   }
   // Stop the root-svg's onClick from firing
   event.stopPropagation();
+}
+
+function mouseEnter(event) {
+  const {
+    target: courseNode,
+  } = event;
+  const courseId = courseNode.getAttribute('course-id');
+  setCourseInformation(getCourseInformation(courseId));
 }
 
 function hideContextMenu(event) {
@@ -382,12 +370,9 @@ export function setupNodegraph() {
       document.querySelectorAll('.course-node').forEach((courseNode) => {
         courseNode.addEventListener('mousedown', clickCourse);
         courseNode.addEventListener('contextmenu', hideContextMenu);
+        courseNode.addEventListener('mouseenter', mouseEnter);
       });
       const rootSvg = document.getElementById('root-svg');
-      rootSvg.addEventListener('mousedown', (event) => {
-        const mouseButtonClicked = mouseButtonByType[event.which];
-        if (mouseButtonClicked === 'left') setCourseSelected(selectedCourseId, false);
-      });
       rootSvg.addEventListener('contextmenu', hideContextMenu);
     });
 }

@@ -42,13 +42,6 @@ p {
     grid-auto-columns: 1fr 1fr;
 }
 
-
-
-/* #term-selector-container > div {
-  width: 100%;
-  height: 100%;
-} */
-
 #course-term-selector {
   display: flex;
   justify-content: center;
@@ -79,7 +72,6 @@ p {
 
 
 .section-title {
-
   align-self: center;
   color:purple;
   font-weight: bold;
@@ -90,12 +82,24 @@ p {
   font-weight: bold;
 }
 
+.course-text {
+   user-select: none;
+}
+
 .circle {
     stroke: black;
     stroke-width: 3px;
     fill: white;
     paint-order: fill;
     clip-path: url(#clip-path);
+}
+
+.circle.future {
+    fill: purple;
+}
+
+.circle.currently-being-set {
+    fill: green;
 }
 
 .circle.selected {
@@ -105,17 +109,9 @@ p {
 .circle.desireable {
     stroke: hsl(37, 91%, 44%);
     stroke-width: 10px;
-    stroke-dasharray: var(--circle-radius);
-    animation: spin 3s linear infinite;
     /*These are needed to make the transformations relative to the center of the circle*/
     transform-origin: center;
     transform-box: fill-box;
-}
-
-@keyframes spin {
-    100% {
-        rotate: 360deg;
-    }
 }
 
 .circle,
