@@ -76,27 +76,46 @@ export function isCourseOffered(courseCode, year, term) {
          && Object.hasOwn(courseScheduleInfo[courseCode][year], term);
 }
 
+/**
+ *
+ * @param {courseCode} course
+ * @param {Number} year
+ * @param {Number} term
+ * @returns Array(Array(CourseScheduleA), Array(CourseScheduleB), ...)
+ */
 export function getCourseSchedule(course, year, term) {
-  return courseScheduleInfo?.[course]?.[year]?.[term];
+  // We'll be returning the time offering of a course in 'schedule' format
+  // (which means, an array of courses)
+  return courseScheduleInfo?.[course]?.[year]?.[term]?.map((courseSchedule) => [courseSchedule]);
 }
 
-// Each schedule is composed of start/end times
 function intersectDays(scheduleA, scheduleB, day) {
-  if (scheduleA[day] === false) return [scheduleB];
-  if (scheduleB[day] === false) return [scheduleA];
-  const aStart = scheduleA.startTime;
-  const aEnd = scheduleA.endTime;
-  const bStart = scheduleB.startTime;
-  const bEnd = scheduleB.endTime;
-  // If they intersect, then these two don't match
-  if (aStart < bEnd && aEnd > bStart) {
-    return [];
-  }
+  if (scheduleA[day] === false) return scheduleB;
+  if (scheduleB[day] === false) return scheduleA;
 
-  return [scheduleA, scheduleB];
+  // Check if any courses in scheduleA intersect with courses in scheduleB
+  for (const courseA of scheduleA) {
+    for (const courseB of scheduleB) {
+      const aStart = courseA.startTime;
+      const aEnd = courseA.endTime;
+      const bStart = courseB.startTime;
+      const bEnd = courseB.endTime;
+      // If they intersect at any point, then scheduleA and scheduleB can't intersect
+      if (aStart < bEnd && aEnd > bStart) {
+        return [];
+      }
+    }
+  }
+  // If they don't intersect, take the courses in scheduleA and scheduleB
+  return scheduleA.concat(scheduleB);
 }
 
-// Returns array of array of objects
+/**
+ *
+ * @param {Array(CourseScheduleA, CourseScheduleB)} schedulesA
+ * @param {Array(CourseScheduleA, CourseScheduleB)} schedulesB
+ * @returns Array(Array(CourseScheduleA, CourseScheduleB), Array(CourseScheduleB), ...)
+ */
 export function intersectSchedules(schedulesA, schedulesB) {
   if (schedulesA.length === 0 && schedulesB.length > 0) return schedulesB;
   if (schedulesB.length === 0 && schedulesA.length > 0) return schedulesA;
@@ -131,17 +150,13 @@ export function intersectSchedules(schedulesA, schedulesB) {
   return validSchedules;
 }
 
-// https://coolors.co/392f5a-d1a94c-118ab2-06d6a0-757755-e3170a
-const colors = ['#E3170A', '#d1a94c', '#118ab2', '#06d6a0', '#392F5A', '#023618'];
-
 // Called from html
 function cycleSchedules(schedules) { // eslint-disable-line no-unused-vars
   // TODO: Add a way to cycle through the possible schedules
 }
 
-function translateDay(courseCode) {
+function translateDay(course) {
   // format weekday bools to numbers for timeslots
-  const course = getCourseSchedule(courseCode);
   const weekdays = [course.mon, course.tue, course.wed, course.thu, course.fri];
   const weekdaysNum = weekdays.reduce(
     (accumulator, currentValue, currentIndex) => {
@@ -168,47 +183,63 @@ function translateTime(hhmm) {
   return x;
 }
 
-function assignCourseBlockColor() {
-  const random = Math.floor(Math.random() * colors.length);
-  // Mutates original array, still returns removed element(s) as a list
-  return colors.splice(random, 1);
+function assignColorToCourses(courseCodes) {
+  // https://coolors.co/392f5a-d1a94c-118ab2-06d6a0-757755-e3170a
+  const colors = ['#E3170A', '#d1a94c', '#118ab2', '#06d6a0', '#392F5A', '#023618'];
+  const colorByCourseCode = {};
+  for (const courseCode of courseCodes) {
+    const random = Math.floor(Math.random() * colors.length);
+    // Mutates original array, still returns removed element(s) as a list
+    const randomColour = colors.splice(random, 1)[0];
+    colorByCourseCode[courseCode] = randomColour;
+  }
+  return colorByCourseCode;
 }
 
-function translateTimeForSlots(courseCode) {
-  const course = getCourseSchedule(courseCode);
+function translateTimeForSlots(course) {
   const timeSlotStart = translateTime(course.startTime);
   const timeSlotEnd = translateTime(course.endTime);
   return [timeSlotStart, timeSlotEnd];
 }
 
-function addSelectedCourseToSchedule(courseCode) {
-  // Add the selected course to the schedule
-  const course = getCourseSchedule(courseCode);
-  const days = translateDay(courseCode);
-  const times = translateTimeForSlots(courseCode);
-  const startTime = times[0];
-  const endTime = times[1];
-  const bg = assignCourseBlockColor(courseCode)[0];
+/**
+ *
+ * @param {Array(Array({CourseA}, {CourseB}), Array({CourseC}), ...)} schedules
+ */
+export function renderCourseSchedule(schedules, courses) {
+  // Clear the schedule
+  document.querySelector('#schedule-content #courses').innerHTML = '';
+  // Assign colours
+  const coloursByCourseCodes = assignColorToCourses(courses);
 
-  days.forEach((day) => {
-    // Add the course to the schedule
-    document.getElementById('schedule-content').innerHTML += ` 
-    <span class = 'course'
-    style='
-    background-color: ${bg};
-    --day: ${day}; 
-    --timeslot-start: ${startTime};
-    --timeslot-end: ${endTime}; 
-    --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
-    --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
-    height: calc(var(--timeslot-height) * var(--course-length)); 
-    left: calc(var(--column-width) * var(--day));
-    top: calc(var(--timeslot-height) * var(--timeslot-start))'>
+  for (const schedule of schedules) {
+    for (const course of schedule) {
+      // Add the selected course to the schedule
+      const days = translateDay(course);
+      const times = translateTimeForSlots(course);
+      const startTime = times[0];
+      const endTime = times[1];
+      const bg = coloursByCourseCodes[course.courseCode];
 
-    ${course.courseCode} </span> `;
-  });
+      days.forEach((day) => {
+        // Add the course to the schedule
+        document.querySelector('#schedule-content #courses').innerHTML += `
+        <span
+          class='course'
+          style='
+            background-color: ${bg};
+            --day: ${day};
+            --timeslot-start: ${startTime};
+            --timeslot-end: ${endTime};
+            --course-length: calc(var(--timeslot-end) - var(--timeslot-start));
+            --indexed-timeslot-start: calc(var(--timeslot-start) - 1); /* 1-indexing it */
+            height: calc(var(--timeslot-height) * var(--course-length));
+            left: calc(var(--column-width) * var(--day));
+            top: calc(var(--timeslot-height) * var(--timeslot-start))'
+          >
+          ${course.courseCode}
+          </span>`;
+      });
+    }
+  }
 }
-
-// Lets say they selected 248 and 249
-// addSelectedCourseToSchedule('COMP248');
-// addSelectedCourseToSchedule('COMP249');

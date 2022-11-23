@@ -3,7 +3,7 @@
 /* eslint-disable no-prototype-builtins */
 import { setupNodegraph, courseInformationByCourseId } from './nodegraph.js';
 import {
-  getCourseSchedule, intersectSchedules, isCourseOffered,
+  getCourseSchedule, intersectSchedules, isCourseOffered, renderCourseSchedule,
 } from './schedule.js';
 
 const universityDatabase = {
@@ -69,7 +69,7 @@ class Student {
 
   setSchedules(schedules) {
     this.schedules = schedules;
-    // TODO: send schedules to be displayed by Ant1
+    renderCourseSchedule(this.schedules, Array.from(this.futureCourses[currYear][currTerm]));
   }
 
   isCourseReqForFutureCourses(course) {
@@ -156,23 +156,30 @@ class Student {
     if (validSchedules.length === 0) {
       throw new Error(`${course} clashes with your current schedule`);
     }
-    // TODO: reflect in GUI
     this.futureCourses[year][term].add(course);
     document.querySelector(`[course-id=${course}] .circle`).classList.add('future');
     this.setSchedules(validSchedules);
   }
 
-  removeCourseFromFuture(course, year, term) {
+  removeCourseFromFuture(removedCourse, year, term) {
     if (!Object.hasOwn(this.futureCourses, year)
     || !Object.hasOwn(this.futureCourses[year], term)) {
       throw new Error('Trying to remove course from year or term that doesn\'t exist for User');
     }
-    if (this.isCourseReqForFutureCourses(course)) {
+    if (this.isCourseReqForFutureCourses(removedCourse)) {
       throw new Error('Trying to remove course which serves as a necessary prereq/coreq for other courses');
     }
-    this.futureCourses[year][term].delete(course);
-    document.querySelector(`[course-id=${course}] .circle`).classList.remove('future');
-    this.setSchedules(this.schedules.filter((validCourse) => validCourse.courseCode !== course));
+    this.futureCourses[year][term].delete(removedCourse);
+    document.querySelector(`[course-id=${removedCourse}] .circle`).classList.remove('future');
+
+    // Find which courses are still present
+    const courses = Array.from(this.futureCourses[year][term]);
+    // Fetch the schedules of these courses
+    const schedules = courses.map((course) => getCourseSchedule(course, year, term));
+    // Intersect all of them to create all the valid schedules
+    const validSchedules = schedules
+      .reduce((scheduleA, scheduleB) => intersectSchedules(scheduleA, scheduleB), []);
+    this.setSchedules(validSchedules);
   }
 
   addDesiredCourse(course) {
