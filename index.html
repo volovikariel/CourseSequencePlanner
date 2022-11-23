@@ -10,6 +10,13 @@
     <script type="module" src="index.js" defer></script>
     <script type="module" src="schedule.js" defer></script>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        function updateDiv(term) {
+    year = document.getElementById("yeardropdown");
+    document.getElementById("showDiv").innerHTML = year.value + " " + term;
+}
+
+    </script>
 </head>
 
 <body>
@@ -25,21 +32,25 @@
         </div>
         <div id="term-selector-container">
             <div id="course-term-selector">
-                <button class="button">Winter</button>
-                <button class="button">Summer</button>
-                <button class="button">Fall</button>
-                <form action="/action_page.php">
-                    <select name="term" id="terms">
-                      <option value="2022">2022</option>
-                      <option value="2023">2023</option>
-                      <option value="2024">2024</option>
-                      <option value="2025">2025</option>
-                    </select>
-                </form>
+                  
+                <select class="select" id="yeardropdown">
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                  </select>
+                  
+                  <button class="button" onclick="updateDiv('winter')">winter</button>
+                  <button class="button" onclick="updateDiv('summer')">summer</button>
+                  <button class="button" onclick="updateDiv('fall')">fall</button>
+            <!--TODO: reflect the term change in the schedule-->
+                  
 
             </div>
-            <div id="weekly-course-schedule">
+            
+            <div>
+                <div id="schedule-information-container"> 
                 <p class="section-title">Schedule</p>
+                <p id="showDiv"></p>
             <div id="schedule-content">
                 <ul>
                     <li><span>09:00</span></li>
@@ -65,8 +76,11 @@
             </div>
             <br/>
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick="cycleSchedules()">Next Schedule </button>
+        </div>
             </div>
         </div>
+    
+        
         <div id="course-information-container">
             <p class="section-title">Course Information</p>
             <p id="course-information-content">Click on a course to display its course information</p>

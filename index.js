@@ -42,6 +42,7 @@ const universityDatabase = {
     },
   },
 };
+
 export const currYear = 2022;
 export const currTerm = 'fall';
 class Student {
@@ -139,9 +140,9 @@ export const student = new Student(
   undefined,
   new Set(['COMP249']),
 );
+
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
   setupNodegraph();
 }
-
 setup();

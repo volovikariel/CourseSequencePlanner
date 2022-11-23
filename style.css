@@ -7,6 +7,7 @@ body {
   margin: 0;
   overflow: hidden;
   font-family:Verdana, Geneva, Tahoma, sans-serif;
+  background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
 }
 
 p {
@@ -18,6 +19,7 @@ p {
     width: 100vw;
     height: 100vh;
     display: grid;
+    
     /* Define the grid as having:display:
      - 2 columns (with one being 3 times as large as the other)
      - 3 equally sized rows
@@ -34,12 +36,14 @@ p {
 
 #node-graph-container {
     grid-area: node-graph;
+    
 }
 
 #term-selector-container {
     grid-area: term-selector-container;
     display: grid;
     grid-auto-columns: 1fr 1fr;
+    
 }
 
 
@@ -55,6 +59,16 @@ p {
   height: fit-content;
 }
 
+
+#schedule-information-container{
+    grid-area: course-information-container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  padding: 5% 5%;
+  height: fit-content;
+}
 #course-information-container {
   grid-area: course-information-container;
   display: flex;
@@ -85,9 +99,7 @@ p {
   font-weight: bold;
   font-size: 1.5em;
   padding-bottom: 0.5em;
-  align-self: center;
-  color: blue;
-  font-weight: bold;
+  
 }
 
 .circle {
@@ -144,7 +156,7 @@ p {
 }
 
 #root-svg {
-    background-color: rgb(85, 85, 85);
+    background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
 }
 
 #root-svg.can-pan {
@@ -226,4 +238,15 @@ p {
 .button:active {
   background-color:orangered;
 }
-
+.select{
+    background-color:blueviolet;
+    border: 3px solid black;
+    color: white;
+    padding: 10px 20px;
+    //text-decoration: none;
+    //display: inline-block;
+    //margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 30px;
+    box-shadow: 4px 4px white, 4px 4px 0px 3px black;
+}
