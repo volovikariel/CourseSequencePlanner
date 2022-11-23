@@ -72,6 +72,24 @@ class Student {
     // TODO: send schedules to be displayed by Ant1
   }
 
+  isCourseReqForFutureCourses(course) {
+    // Courses that depend on this course
+    const dependantCourses = [];
+    Object.entries(courseInformationByCourseId).forEach(([courseId, courseInfo]) => {
+      if (courseInfo.prereqs.concat(courseInfo.coreqs).includes(course)) {
+        dependantCourses.push(courseId);
+      }
+    });
+
+    for (const dependantcourse of dependantCourses) {
+      if (this.futureCourses[currYear][currTerm].has(dependantcourse)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   haveCourseRequisitesForCourse(course, yearUpperBound, termUpperBound) {
     const termIndexByTerm = {
       winter: 0,
@@ -148,6 +166,9 @@ class Student {
     if (!Object.hasOwn(this.futureCourses, year)
     || !Object.hasOwn(this.futureCourses[year], term)) {
       throw new Error('Trying to remove course from year or term that doesn\'t exist for User');
+    }
+    if (this.isCourseReqForFutureCourses(course)) {
+      throw new Error('Trying to remove course which serves as a necessary prereq/coreq for other courses');
     }
     this.futureCourses[year][term].delete(course);
     document.querySelector(`[course-id=${course}] .circle`).classList.remove('future');
