@@ -102,7 +102,8 @@ class Student {
     const completedCourses = new Set();
 
     let passedUpperBounds = false;
-    for (const year of Object.keys(this.futureCourses)) {
+    for (let year of Object.keys(this.futureCourses)) {
+      year = parseInt(year, 10);
       if (year > yearUpperBound || passedUpperBounds) break;
       for (const term of Object.keys(this.futureCourses[year])) {
         // We don't want to take into account courses taken THIS semester for the prerequisites

@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-syntax */
+import { courseInformationByCourseId } from './nodegraph.js';
+
 const daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri'];
 const courseScheduleInfo = {
   COMP248: {
@@ -40,8 +42,8 @@ const courseScheduleInfo = {
           fri: false,
         },
         {
-          courseName: 'Object-Oriented Programming 1',
-          courseCode: 'COMP248',
+          courseName: courseInformationByCourseId.COMP248.courseName,
+          courseCode: courseInformationByCourseId.COMP248.courseCode,
           startTime: '10:00',
           endTime: '12:00',
           mon: false,
@@ -56,8 +58,8 @@ const courseScheduleInfo = {
   COMP249: {
     2022: {
       fall: [{
-        courseName: 'Object-Oriented Programming 2',
-        courseCode: 'COMP249',
+        courseName: courseInformationByCourseId.COMP249.courseName,
+        courseCode: courseInformationByCourseId.COMP249.courseCode,
         startTime: '13:30',
         endTime: '15:30',
         mon: true,
@@ -68,13 +70,24 @@ const courseScheduleInfo = {
       }],
     },
   },
-  COMP228: {
+  MATH203: {
     2022: {
       fall: [{
-        courseName: 'System Hardware',
-        courseCode: 'COMP228',
+        courseName: courseInformationByCourseId.MATH203.courseName,
+        courseCode: courseInformationByCourseId.MATH203.courseCode,
         startTime: '15:30',
         endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      },
+      {
+        courseName: courseInformationByCourseId.MATH203.courseName,
+        courseCode: courseInformationByCourseId.MATH203.courseCode,
+        startTime: '11:00',
+        endTime: '12:30',
         mon: false,
         tue: true,
         wed: false,
