@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
 import { setupNodegraph } from './nodegraph.js';
 
@@ -43,8 +44,8 @@ const universityDatabase = {
   },
 };
 
-export const currYear = 2022;
-export const currTerm = 'fall';
+export let currYear = 2022;
+export let currTerm = 'fall';
 class Student {
   constructor(
     university,
@@ -100,11 +101,11 @@ class Student {
 }
 
 function formatCourseInformation({ courseName, courseCode, information }) {
-    return `
+  return `
             <span><span class="title">Course Name: </span>${courseName}</span>
             <p><span class="title">Course Code:</span> ${courseCode}</p>
             <p>${information}</p>
-    `
+    `;
 }
 function formatProgramInformation(university, program) {
   const { creditRequirements } = universityDatabase[university][program];
@@ -122,7 +123,6 @@ function formatProgramInformation(university, program) {
         <div style="display: flex; flex-direction: column;">${formattedCreditRequirements.join('')}</div>
     `;
 }
-
 
 export default function setCourseInformation(courseInformation) {
   if (typeof courseInformation === 'undefined' || courseInformation == null) {
@@ -143,6 +143,22 @@ export const student = new Student(
 
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  // TODO: load schedule for currYear and currTerm
   setupNodegraph();
 }
 setup();
+
+for (const term of ['summer', 'winter', 'fall']) {
+  document.querySelector(`button#${term}`).addEventListener('click', () => {
+    currTerm = term;
+    document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+    // TODO: load schedule for currYear and currTerm
+  });
+}
+
+document.getElementById('year-dropdown').addEventListener('change', (event) => {
+  currYear = parseInt(event.target.value, 10);
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  // TODO: load schedule for currYear and currTerm
+});

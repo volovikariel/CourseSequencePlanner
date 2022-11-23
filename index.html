@@ -10,13 +10,6 @@
     <script type="module" src="index.js" defer></script>
     <script type="module" src="schedule.js" defer></script>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    <script>
-        function updateDiv(term) {
-    year = document.getElementById("yeardropdown");
-    document.getElementById("showDiv").innerHTML = year.value + " " + term;
-}
-
-    </script>
 </head>
 
 <body>
@@ -33,15 +26,15 @@
         <div id="term-selector-container">
             <div id="course-term-selector">
                   
-                <select class="select" id="yeardropdown">
+                <select class="select" id="year-dropdown">
                     <option value="2020">2020</option>
                     <option value="2021">2021</option>
-                    <option value="2022">2022</option>
+                    <option value="2022" selected>2022</option>
                   </select>
                   
-                  <button class="button" onclick="updateDiv('winter')">winter</button>
-                  <button class="button" onclick="updateDiv('summer')">summer</button>
-                  <button class="button" onclick="updateDiv('fall')">fall</button>
+                  <button id="winter" class="button">winter</button>
+                  <button id="summer" class="button">summer</button>
+                  <button id="fall" class="button">fall</button>
             <!--TODO: reflect the term change in the schedule-->
                   
 
@@ -50,7 +43,7 @@
             <div>
                 <div id="schedule-information-container"> 
                 <p class="section-title">Schedule</p>
-                <p id="showDiv"></p>
+                <p id="schedule-title"></p>
             <div id="schedule-content">
                 <ul>
                     <li><span>09:00</span></li>
