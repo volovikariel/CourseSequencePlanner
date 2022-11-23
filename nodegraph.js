@@ -237,7 +237,7 @@ function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
 
 // isPrereq = true: prereq
 // isPrereq = false: coreq
-function addEdge(fromX, fromY, toX, toY, isPrereq) {
+function addEdge(fromX, fromY, toX, toY, markerHeight, isPrereq) {
   document.getElementById('root-svg').innerHTML += `
         <svg>
             <defs>
@@ -246,8 +246,8 @@ function addEdge(fromX, fromY, toX, toY, isPrereq) {
                   viewBox="0 0 10 10"
                   refX="5"
                   refY="5"
-                  markerWidth="6"
-                  markerHeight="6"
+                  markerWidth="${markerHeight}"
+                  markerHeight="${markerHeight}"
                   orient="auto-start-reverse"
               >
                 <path d="M 0 0 L 10 5 L 0 10 z" />
@@ -335,35 +335,57 @@ export function setupNodegraph() {
   ]
     .forEach(([reqsByCourseId, isPrereq]) => {
       reqsByCourseId.forEach(([courseId, reqIds]) => {
-        const destinationBoundingRect = document
+        // dest for destination
+        const destBoundingRect = document
           .querySelector(`[course-id='${courseId}']`)
           .getBoundingClientRect();
-        const destinationCenterX = destinationBoundingRect.left
-          + destinationBoundingRect.width / 2;
-        const destinationCenterY = destinationBoundingRect.top
-          + destinationBoundingRect.height / 2;
+
+        let x2 = destBoundingRect.left
+          + destBoundingRect.width / 2;
+        let y2 = destBoundingRect.top
+          + destBoundingRect.height / 2;
+        const correctedDestCenter = convertPosToSvg(x2, y2);
+        x2 = correctedDestCenter.x;
+        y2 = correctedDestCenter.y;
         reqIds.forEach((reqId) => {
-          const sourceBoundingRect = document
+          // s for source
+          const sBoundingRect = document
             .querySelector(`[course-id=${reqId}]`)
             .getBoundingClientRect();
-          const sourceCenterX = sourceBoundingRect.left
-            + sourceBoundingRect.width / 2;
-          const sourceCenterY = sourceBoundingRect.top
-            + sourceBoundingRect.height / 2;
-          const distanceBetweenSourceAndDestination = Math.sqrt(
-            (destinationCenterX - sourceCenterX) ** 2
-            + (destinationCenterY - sourceCenterY) ** 2,
+          let x1 = sBoundingRect.left
+            + sBoundingRect.width / 2;
+          let y1 = sBoundingRect.top
+            + sBoundingRect.height / 2;
+          const correctedSCenter = convertPosToSvg(x1, y1);
+          x1 = correctedSCenter.x;
+          y1 = correctedSCenter.y;
+          // Distance between the points (x1,y1) and (x2,y2)
+          const d = Math.sqrt(
+            (x2 - x1) ** 2
+            + (y2 - y1) ** 2,
           );
-          const d2 = distanceBetweenSourceAndDestination - circleRadius;
-          const ratio = d2 / distanceBetweenSourceAndDestination;
-          const dx = (destinationCenterX - sourceCenterX) * ratio;
-          const dy = (destinationCenterY - sourceCenterY) * ratio;
-          const destX = sourceCenterX + dx;
-          const destY = sourceCenterY + dy;
-          const sourceX = destinationCenterX - dx;
-          const sourceY = destinationCenterY - dy;
-          addEdge(sourceX, sourceY, destX, destY, isPrereq);
+          const markerHeight = 6;
+          const distFromCenter = circleRadius + markerHeight;
+          // x3 y3 is the corrected version of x1 y1
+          const x3 = x1 + (x2 - x1) * (distFromCenter / d);
+          const y3 = y1 + (y2 - y1) * (distFromCenter / d);
+          // x4 y4 is the corrected version of x2 y2
+          const x4 = x2 + (x1 - x2) * (distFromCenter / d);
+          const y4 = y2 + (y1 - y2) * (distFromCenter / d);
+
+          addEdge(x3, y3, x4, y4, markerHeight, isPrereq);
         });
+      });
+
+      // Adding the nodes
+      document.querySelectorAll('.course-node').forEach((el) => el.remove());
+      Object.entries(courseInformationByCourseId).forEach(([courseId, courseInformation]) => {
+        // The fixed position of every node is relative to the root window
+        addCourseNode(
+          courseId,
+          courseInformation.xOffsetPercent * viewBox.width + viewBox.x,
+          courseInformation.yOffsetPercent * viewBox.height + viewBox.y,
+        );
       });
 
       // Adding event listeners
