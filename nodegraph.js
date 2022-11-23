@@ -39,7 +39,7 @@ export const courseInformationByCourseId = {
     information: 'Design of classes. Inheritance. Polymorphism. Static and dynamic binding. Abstract classes. Exception handling. File I/O. Recursion. Interfaces and inner classes. Graphical user interfaces. Generics. Collections and iterators.',
   },
   COMP228: {
-    courseName: 'The System Hardware',
+    courseName: 'System Hardware',
     courseCode: 'COMP228',
     prereqs: ['COMP248'],
     coreqs: ['NYC', 'NYA', 'CEGEP105', 'MATH204', 'CEGEP103', 'MATH203'],

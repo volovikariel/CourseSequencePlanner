@@ -3,7 +3,7 @@
 /* eslint-disable no-prototype-builtins */
 import { setupNodegraph, courseInformationByCourseId } from './nodegraph.js';
 import {
-  getCourseSchedule, intersectSchedules, isCourseOffered, renderCourseSchedule,
+  getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules,
 } from './schedule.js';
 
 const universityDatabase = {
@@ -52,6 +52,7 @@ class Student {
     futureCourses = {},
     desiredCourses = new Set(),
     otherRequirementCompletion = new Set(),
+    schedules = [],
   ) {
     const universities = Object.keys(universityDatabase);
     if (!universities.includes(university)) throw new Error('invalid university passed in');
@@ -64,12 +65,13 @@ class Student {
     this.futureCourses = futureCourses;
     this.desiredCourses = desiredCourses;
     this.otherRequirementCompletion = otherRequirementCompletion;
-    this.schedules = [];
+    this.schedules = schedules;
+    loadCourseSchedules(schedules, Array.from(this.futureCourses?.[currYear]?.[currTerm] ?? []));
   }
 
   setSchedules(schedules) {
     this.schedules = schedules;
-    renderCourseSchedule(this.schedules, Array.from(this.futureCourses[currYear][currTerm]));
+    loadCourseSchedules(this.schedules, Array.from(this.futureCourses[currYear][currTerm]));
   }
 
   isCourseReqForFutureCourses(course) {
