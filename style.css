@@ -43,7 +43,7 @@ p {
     grid-area: term-selector-container;
     display: grid;
     grid-auto-columns: 1fr 1fr;
-    
+    justify-items: center;
 }
 
 #course-term-selector {
@@ -52,16 +52,6 @@ p {
   height: fit-content;
 }
 
-
-#schedule-information-container{
-    grid-area: course-information-container;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  padding: 5% 5%;
-  height: fit-content;
-}
 #course-information-container {
   grid-area: course-information-container;
   display: flex;
@@ -83,7 +73,6 @@ p {
   padding: 5% 5%;
   color: indigo;
 }
-
 
 .section-title {
   align-self: center;
@@ -234,14 +223,14 @@ p {
 .button:active {
   background-color:orangered;
 }
-.select{
+.select {
     background-color:blueviolet;
     border: 3px solid black;
     color: white;
     padding: 10px 20px;
-    //text-decoration: none;
-    //display: inline-block;
-    //margin: 4px 2px;
+    /* text-decoration: none; */
+    /* display: inline-block; */
+    /* margin: 4px 2px; */
     cursor: pointer;
     border-radius: 30px;
     box-shadow: 4px 4px white, 4px 4px 0px 3px black;
