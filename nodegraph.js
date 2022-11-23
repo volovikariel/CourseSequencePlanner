@@ -365,13 +365,12 @@ export function setupNodegraph() {
             + (y2 - y1) ** 2,
           );
           const markerHeight = 6;
-          const distFromCenter = circleRadius + markerHeight;
           // x3 y3 is the corrected version of x1 y1
-          const x3 = x1 + (x2 - x1) * (distFromCenter / d);
-          const y3 = y1 + (y2 - y1) * (distFromCenter / d);
+          const x3 = x1 + (x2 - x1) * (circleRadius / d);
+          const y3 = y1 + (y2 - y1) * (circleRadius / d);
           // x4 y4 is the corrected version of x2 y2
-          const x4 = x2 + (x1 - x2) * (distFromCenter / d);
-          const y4 = y2 + (y1 - y2) * (distFromCenter / d);
+          const x4 = x2 + (x1 - x2) * ((circleRadius + markerHeight) / d);
+          const y4 = y2 + (y1 - y2) * ((circleRadius + markerHeight) / d);
 
           addEdge(x3, y3, x4, y4, markerHeight, isPrereq);
         });
