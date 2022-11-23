@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-syntax */
+import { currTerm, currYear } from './index.js';
 import { courseInformationByCourseId } from './nodegraph.js';
 
 const daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri'];

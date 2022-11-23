@@ -51,10 +51,10 @@ class Student {
   constructor(
     university,
     program,
-    futureCourses = {},
+    futureCourses = { [currYear]: { [currTerm]: new Set() } },
     desiredCourses = new Set(),
     otherRequirementCompletion = new Set(),
-    schedules = [],
+    schedules = { [currYear]: { [currTerm]: [] } },
   ) {
     const universities = Object.keys(universityDatabase);
     if (!universities.includes(university)) throw new Error('invalid university passed in');
@@ -68,12 +68,25 @@ class Student {
     this.desiredCourses = desiredCourses;
     this.otherRequirementCompletion = otherRequirementCompletion;
     this.schedules = schedules;
-    loadCourseSchedules(schedules, Array.from(this.futureCourses?.[currYear]?.[currTerm] ?? []));
+    loadCourseSchedules(
+      schedules[currYear][currTerm],
+      Array.from(this.futureCourses[currYear][currTerm]),
+    );
   }
 
-  setSchedules(schedules) {
-    this.schedules = schedules;
-    loadCourseSchedules(this.schedules, Array.from(this.futureCourses[currYear][currTerm]));
+  setSchedules(schedules, year, term) {
+    this.schedules[year][term] = schedules;
+    if (!Object.hasOwn(this.futureCourses, currYear)
+    || !Object.hasOwn(this.futureCourses[currYear], currTerm)) {
+      this.futureCourses[currYear] = {
+        [currTerm]: new Set(),
+        ...this.futureCourses[currYear],
+      };
+    }
+    loadCourseSchedules(
+      this.schedules[year][term],
+      Array.from(this.futureCourses[currYear][currTerm]),
+    );
   }
 
   isCourseReqForFutureCourses(course) {
@@ -145,6 +158,7 @@ class Student {
     || !Object.hasOwn(this.futureCourses[year], term)) {
       this.futureCourses[year] = {
         [term]: new Set(),
+        ...this.futureCourses[currYear],
       };
     }
 
@@ -155,15 +169,15 @@ class Student {
       throw new Error(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term}`);
     }
     const validSchedules = intersectSchedules(
-      this.schedules,
-      getCourseSchedule(course, currYear, currTerm),
+      this.schedules[year][term],
+      getCourseSchedule(course, year, term),
     );
     if (validSchedules.length === 0) {
       throw new Error(`${course} clashes with your current schedule`);
     }
     this.futureCourses[year][term].add(course);
     document.querySelector(`[course-id=${course}] .circle`).classList.add('future');
-    this.setSchedules(validSchedules);
+    this.setSchedules(validSchedules, year, term);
   }
 
   removeCourseFromFuture(removedCourse, year, term) {
@@ -184,7 +198,7 @@ class Student {
     // Intersect all of them to create all the valid schedules
     const validSchedules = schedules
       .reduce((scheduleA, scheduleB) => intersectSchedules(scheduleA, scheduleB), []);
-    this.setSchedules(validSchedules);
+    this.setSchedules(validSchedules, year, term);
   }
 
   addDesiredCourse(course) {
@@ -255,12 +269,50 @@ for (const term of ['summer', 'winter', 'fall']) {
   document.querySelector(`button#${term}`).addEventListener('click', () => {
     currTerm = term;
     document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
-    // TODO: load schedule for currYear and currTerm
+
+    // load schedule for currYear and currTerm
+    if (!Object.hasOwn(student.futureCourses, currYear)
+    || !Object.hasOwn(student.futureCourses[currYear], currTerm)) {
+      student.futureCourses[currYear] = {
+        [currTerm]: new Set(),
+        ...student.futureCourses[currYear],
+      };
+    }
+    if (!Object.hasOwn(student.schedules, currYear)
+    || !Object.hasOwn(student.schedules[currYear], currTerm)) {
+      student.schedules[currYear] = {
+        [currTerm]: [],
+        ...student.schedules[currYear],
+      };
+    }
+    loadCourseSchedules(
+      student.schedules[currYear][currTerm],
+      Array.from(student.futureCourses[currYear][currTerm]),
+    );
   });
 }
 
 document.getElementById('year-dropdown').addEventListener('change', (event) => {
   currYear = parseInt(event.target.value, 10);
   document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
-  // TODO: load schedule for currYear and currTerm
+
+  // load schedule for currYear and currTerm
+  if (!Object.hasOwn(student.futureCourses, currYear)
+    || !Object.hasOwn(student.futureCourses[currYear], currTerm)) {
+    student.futureCourses[currYear] = {
+      [currTerm]: new Set(),
+      ...student.futureCourses[currYear],
+    };
+  }
+  if (!Object.hasOwn(student.schedules, currYear)
+    || !Object.hasOwn(student.schedules[currYear], currTerm)) {
+    student.schedules[currYear] = {
+      [currTerm]: [],
+      ...student.schedules[currYear],
+    };
+  }
+  loadCourseSchedules(
+    student.schedules[currYear][currTerm],
+    Array.from(student.futureCourses[currYear][currTerm]),
+  );
 });
