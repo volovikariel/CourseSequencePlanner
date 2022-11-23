@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
@@ -43,8 +44,9 @@ const universityDatabase = {
     },
   },
 };
-export const currYear = 2022;
-export const currTerm = 'fall';
+
+export let currYear = 2022;
+export let currTerm = 'fall';
 class Student {
   constructor(
     university,
@@ -240,9 +242,25 @@ export const student = new Student(
   undefined,
   new Set(['COMP249']),
 );
+
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  // TODO: load schedule for currYear and currTerm
   setupNodegraph();
 }
-
 setup();
+
+for (const term of ['summer', 'winter', 'fall']) {
+  document.querySelector(`button#${term}`).addEventListener('click', () => {
+    currTerm = term;
+    document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+    // TODO: load schedule for currYear and currTerm
+  });
+}
+
+document.getElementById('year-dropdown').addEventListener('change', (event) => {
+  currYear = parseInt(event.target.value, 10);
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  // TODO: load schedule for currYear and currTerm
+});

@@ -25,21 +25,17 @@
         </div>
         <div id="term-selector-container">
             <div id="course-term-selector">
-                <button class="button">Winter</button>
-                <button class="button">Summer</button>
-                <button class="button">Fall</button>
-                <form action="/action_page.php">
-                    <select name="term" id="terms">
-                      <option value="2022">2022</option>
-                      <option value="2023">2023</option>
-                      <option value="2024">2024</option>
-                      <option value="2025">2025</option>
-                    </select>
-                </form>
-
-            </div>
-            <div id="weekly-course-schedule">
-                <p class="section-title">Schedule</p>
+                <select class="select" id="year-dropdown">
+                    <option value="2022" selected>2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                  </select>
+                  
+                  <button id="winter" class="button">winter</button>
+                  <button id="summer" class="button">summer</button>
+                  <button id="fall" class="button">fall</button>
+            </div> 
+            <p id="schedule-title" class="section-title"></p>
             <div id="schedule-content">
                 <ul>
                     <li><span>09:00</span></li>
@@ -64,10 +60,8 @@
                 </ul>
                 <div id="courses"></div>
             </div>
-            <br/>
             <button id="prev-schedule" style="visibility: hidden;" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Prev Schedule</button>
             <button id="next-schedule" style="visibility: hidden;" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Next Schedule</button>
-            </div>
         </div>
         <div id="course-information-container">
             <p class="section-title">Course Information</p>
