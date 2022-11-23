@@ -99,7 +99,7 @@ p {
     fill: purple;
 }
 
-.circle.currently-being-set {
+.circle.current {
     fill: green;
 }
 

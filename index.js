@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-loop-func */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
@@ -176,7 +177,7 @@ class Student {
       throw new Error(`${course} clashes with your current schedule`);
     }
     this.futureCourses[year][term].add(course);
-    document.querySelector(`[course-id=${course}] .circle`).classList.add('future');
+    document.querySelector(`[course-id=${course}] .circle`).classList.add('future', 'current');
     this.setSchedules(validSchedules, year, term);
   }
 
@@ -188,8 +189,11 @@ class Student {
     if (this.isCourseReqForFutureCourses(removedCourse)) {
       throw new Error('Trying to remove course which serves as a necessary prereq/coreq for other courses');
     }
+    if (!this.futureCourses[year][term].has(removedCourse)) {
+      throw new Error('Trying to remove course while in the wrong term');
+    }
     this.futureCourses[year][term].delete(removedCourse);
-    document.querySelector(`[course-id=${removedCourse}] .circle`).classList.remove('future');
+    document.querySelector(`[course-id=${removedCourse}] .circle`).classList.remove('future', 'current');
 
     // Find which courses are still present
     const courses = Array.from(this.futureCourses[year][term]);
@@ -215,6 +219,41 @@ class Student {
     courseCircle.classList.remove('desireable');
   }
 }
+const university = 'Concordia University';
+const program = 'Computer Science';
+export const student = new Student(
+  university,
+  program,
+  undefined,
+  new Set(['COMP249']),
+);
+
+function loadCourseScheduleSafely() {
+  if (!Object.hasOwn(student.futureCourses, currYear)
+  || !Object.hasOwn(student.futureCourses[currYear], currTerm)) {
+    student.futureCourses[currYear] = {
+      [currTerm]: new Set(),
+      ...student.futureCourses[currYear],
+    };
+  }
+  if (!Object.hasOwn(student.schedules, currYear)
+  || !Object.hasOwn(student.schedules[currYear], currTerm)) {
+    student.schedules[currYear] = {
+      [currTerm]: [],
+      ...student.schedules[currYear],
+    };
+  }
+  // Clear all the 'current' classes as we are changing term/year
+  // Mark the new term/year classes are 'current'
+  document.querySelectorAll('.current').forEach((el) => el.classList.remove('current'));
+  student.futureCourses[currYear][currTerm].forEach((courseCode) => {
+    document.querySelector(`[course-id=${courseCode}] .circle`).classList.add('current');
+  });
+  loadCourseSchedules(
+    student.schedules[currYear][currTerm],
+    Array.from(student.futureCourses[currYear][currTerm]),
+  );
+}
 
 function formatCourseInformation({ courseName, courseCode, information }) {
   return `
@@ -223,8 +262,8 @@ function formatCourseInformation({ courseName, courseCode, information }) {
             <p>${information}</p>
     `;
 }
-function formatProgramInformation(university, program) {
-  const { creditRequirements } = universityDatabase[university][program];
+function formatProgramInformation(_university, _program) {
+  const { creditRequirements } = universityDatabase[_university][_program];
   const formattedCreditRequirements = Object.entries(creditRequirements).map(
     ([electiveName, { completed, need }]) => `
         <div>
@@ -248,15 +287,6 @@ export default function setCourseInformation(courseInformation) {
   }
 }
 
-const university = 'Concordia University';
-const program = 'Computer Science';
-export const student = new Student(
-  university,
-  program,
-  undefined,
-  new Set(['COMP249']),
-);
-
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
   document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
@@ -271,24 +301,7 @@ for (const term of ['summer', 'winter', 'fall']) {
     document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
 
     // load schedule for currYear and currTerm
-    if (!Object.hasOwn(student.futureCourses, currYear)
-    || !Object.hasOwn(student.futureCourses[currYear], currTerm)) {
-      student.futureCourses[currYear] = {
-        [currTerm]: new Set(),
-        ...student.futureCourses[currYear],
-      };
-    }
-    if (!Object.hasOwn(student.schedules, currYear)
-    || !Object.hasOwn(student.schedules[currYear], currTerm)) {
-      student.schedules[currYear] = {
-        [currTerm]: [],
-        ...student.schedules[currYear],
-      };
-    }
-    loadCourseSchedules(
-      student.schedules[currYear][currTerm],
-      Array.from(student.futureCourses[currYear][currTerm]),
-    );
+    loadCourseScheduleSafely();
   });
 }
 
@@ -297,22 +310,5 @@ document.getElementById('year-dropdown').addEventListener('change', (event) => {
   document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
 
   // load schedule for currYear and currTerm
-  if (!Object.hasOwn(student.futureCourses, currYear)
-    || !Object.hasOwn(student.futureCourses[currYear], currTerm)) {
-    student.futureCourses[currYear] = {
-      [currTerm]: new Set(),
-      ...student.futureCourses[currYear],
-    };
-  }
-  if (!Object.hasOwn(student.schedules, currYear)
-    || !Object.hasOwn(student.schedules[currYear], currTerm)) {
-    student.schedules[currYear] = {
-      [currTerm]: [],
-      ...student.schedules[currYear],
-    };
-  }
-  loadCourseSchedules(
-    student.schedules[currYear][currTerm],
-    Array.from(student.futureCourses[currYear][currTerm]),
-  );
+  loadCourseScheduleSafely();
 });
