@@ -36,7 +36,18 @@ p {
 
 #node-graph-container {
     grid-area: node-graph;
-    
+}
+
+#search-course {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    background-color:blueviolet;
+    border: 3px solid black;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
 }
 
 #term-selector-container {

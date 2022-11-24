@@ -397,3 +397,12 @@ export function setupNodegraph() {
       rootSvg.addEventListener('contextmenu', hideContextMenu);
     });
 }
+
+export function scrollCourseIntoView(courseCode) {
+  const topLeftViewportPos = document.querySelector(`[course-id=${courseCode}]`).getBoundingClientRect();
+  const centerX = topLeftViewportPos.left + topLeftViewportPos.width / 2;
+  const centerY = topLeftViewportPos.top + topLeftViewportPos.height / 2;
+  const SVGcenterPosition = convertPosToSvg(centerX, centerY);
+  viewBox.x = SVGcenterPosition.x - viewBox.width / 2;
+  viewBox.y = SVGcenterPosition.y - viewBox.height / 2;
+}

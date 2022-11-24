@@ -3,7 +3,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-import { setupNodegraph, courseInformationByCourseId } from './nodegraph.js';
+import { setupNodegraph, courseInformationByCourseId, scrollCourseIntoView } from './nodegraph.js';
 import {
   getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules,
 } from './schedule.js';
@@ -311,4 +311,18 @@ document.getElementById('year-dropdown').addEventListener('change', (event) => {
 
   // load schedule for currYear and currTerm
   loadCourseScheduleSafely();
+});
+
+// Populate dropdown
+const courseListElement = document.querySelector('datalist#courses');
+const courseList = Object.keys(courseInformationByCourseId);
+courseList.forEach((course) => {
+  courseListElement.innerHTML += `<option>${course}</option>`;
+});
+document.getElementById('search-course').addEventListener('change', (event) => {
+  const selectedCourse = event.target.value;
+  if (!courseList.includes(selectedCourse)) {
+    throw new Error('Invalid course selected');
+  }
+  scrollCourseIntoView(selectedCourse);
 });
