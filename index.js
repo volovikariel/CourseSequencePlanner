@@ -1,9 +1,12 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-loop-func */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-import { setupNodegraph, courseInformationByCourseId, scrollCourseIntoView } from './nodegraph.js';
+import {
+  setupNodegraph, courseInformationByCourseId, scrollCourseIntoView, handleTermIcons,
+} from './nodegraph.js';
 import {
   getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules,
 } from './schedule.js';
@@ -243,6 +246,9 @@ function loadCourseScheduleSafely() {
       ...student.schedules[currYear],
     };
   }
+
+  handleTermIcons();
+
   // Clear all the 'current' classes as we are changing term/year
   // Mark the new term/year classes are 'current'
   document.querySelectorAll('.current').forEach((el) => el.classList.remove('current'));
@@ -290,7 +296,6 @@ export default function setCourseInformation(courseInformation) {
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
   document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
-  // TODO: load schedule for currYear and currTerm
   setupNodegraph();
 }
 setup();

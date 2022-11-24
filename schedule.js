@@ -3,7 +3,7 @@ import { currTerm, currYear } from './index.js';
 import { courseInformationByCourseId } from './nodegraph.js';
 
 const daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri'];
-const courseScheduleInfo = {
+export const courseScheduleInfo = {
   COMP248: {
     2022: {
       fall: [
@@ -43,8 +43,8 @@ const courseScheduleInfo = {
           fri: false,
         },
         {
-          courseName: courseInformationByCourseId.COMP248.courseName,
-          courseCode: courseInformationByCourseId.COMP248.courseCode,
+          courseName: 'The Course Name',
+          courseCode: 'COMP248',
           startTime: '10:00',
           endTime: '12:00',
           mon: false,
@@ -59,8 +59,21 @@ const courseScheduleInfo = {
   COMP249: {
     2022: {
       fall: [{
-        courseName: courseInformationByCourseId.COMP249.courseName,
-        courseCode: courseInformationByCourseId.COMP249.courseCode,
+        courseName: 'Object-Oriented Programming II',
+        courseCode: 'COMP249',
+        startTime: '13:30',
+        endTime: '15:30',
+        mon: true,
+        tue: false,
+        wed: true,
+        thu: true,
+        fri: false,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'Object-Oriented Programming II',
+        courseCode: 'COMP249',
         startTime: '13:30',
         endTime: '15:30',
         mon: true,
@@ -74,8 +87,8 @@ const courseScheduleInfo = {
   MATH203: {
     2022: {
       fall: [{
-        courseName: courseInformationByCourseId.MATH203.courseName,
-        courseCode: courseInformationByCourseId.MATH203.courseCode,
+        courseName: 'The Differential and Integral Calculus I',
+        courseCode: 'MATH203',
         startTime: '15:30',
         endTime: '18:00',
         mon: false,
@@ -85,10 +98,25 @@ const courseScheduleInfo = {
         fri: true,
       },
       {
-        courseName: courseInformationByCourseId.MATH203.courseName,
-        courseCode: courseInformationByCourseId.MATH203.courseCode,
+        courseName: 'The Differential and Integral Calculus I',
+        courseCode: 'MATH203',
         startTime: '11:00',
         endTime: '12:30',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  NYA: {
+    2023: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'NYA',
+        startTime: '15:30',
+        endTime: '18:00',
         mon: false,
         tue: true,
         wed: false,

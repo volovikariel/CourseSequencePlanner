@@ -1,4 +1,8 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
 import setCourseInformation, { currTerm, currYear, student } from './index.js';
+
+import { courseScheduleInfo } from './schedule.js';
 
 export const circleRadius = Number(
   window
@@ -111,7 +115,6 @@ export const courseInformationByCourseId = {
     information: 'Fundamentals of operating system functionalities, design and implementation. Multiprogramming: processes and threads, context switching, queuing models and scheduling. Interprocess communication and synchronization. Principles of concurrency. Synchronization primitives. Deadlock detection and recovery, prevention and avoidance schemes. Memory management. Device management. File systems. Protection models and schemes.',
   },
 };
-
 function convertPosToSvg(x, y) {
   const point = new DOMPoint();
   // clientX and cientY are relative to the document
@@ -205,21 +208,22 @@ function setupZooming() {
   // Zooming section end
 }
 
+document.getElementById('root-svg').innerHTML += `
+<!--The inside border of the circle (yes, kind of wacky, taken from https://stackoverflow.com/a/70013225)-->
+<defs>
+    <clipPath id="clip-path">
+        <circle id="clip-path-circle"/>
+    </clipPath>
+</defs>
+`;
+
 function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
   document.getElementById('root-svg').innerHTML += `
-        <svg
-            course-id="${courseId}"
-            class="course-node"
-            x="${xOffsetInPx}"
-            y="${yOffsetInPx}"
-        >
-            <!--The inside border of the circle (yes, kind of wacky, taken from https://stackoverflow.com/a/70013225)-->
-            <defs>
-                <clipPath id="clip-path">
-                    <circle id="clip-path-circle"/>
-                </clipPath>
-            </defs>
-            <g class="circle-group">
+            <g  
+              course-id="${courseId}"
+              class="course-node circle-group"
+              transform="translate(${xOffsetInPx}, ${yOffsetInPx})"
+            > 
               <circle class="circle"/>
               <!--Offset the text by the same amount that the circle radius, so as to have it centered-->
               <text 
@@ -232,7 +236,10 @@ function addCourseNode(courseId, xOffsetInPx = 0, yOffsetInPx = 0) {
                 ${courseId}
               </text>
             </g>
-        </svg>`;
+            <text id="${courseId}" class="winter" x="${xOffsetInPx - 25}" y="${yOffsetInPx + circleRadius}" style="visibility: hidden;">❄️</text>
+            <text id="${courseId}" class="summer" x="${xOffsetInPx + circleRadius - 12}" y="${yOffsetInPx - 5}" style="visibility: hidden;">☀️</text>
+            <text id="${courseId}" class="fall" x="${xOffsetInPx + 2 * circleRadius + 5}" y="${yOffsetInPx + circleRadius}" style="visibility: hidden;"">🍂</text>
+            `;
 }
 
 // isPrereq = true: prereq
@@ -273,7 +280,7 @@ function getCourseInformation(courseId) {
 function clickCourse(event) {
   const mouseButtonClicked = mouseButtonByType[event.which];
   const {
-    target: { parentElement: { parentElement: courseNode } },
+    target: { parentElement: courseNode },
   } = event;
   const courseId = courseNode.getAttribute('course-id');
   const courseCircle = courseNode.querySelector('.circle');
@@ -307,6 +314,15 @@ function hideContextMenu(event) {
   event.preventDefault();
 }
 
+export function handleTermIcons() {
+  const terms = new Set(['fall', 'winter', 'summer']);
+  terms.delete(currTerm);
+  terms.forEach((term) => {
+    document.querySelectorAll(`.${term}`).forEach((el) => el.style.filter = 'contrast(0.0)');
+  });
+  document.querySelectorAll(`.${currTerm}`).forEach((el) => el.style.filter = 'contrast(1)');
+}
+
 export function setupNodegraph() {
   setupPanning();
   setupZooming();
@@ -319,6 +335,19 @@ export function setupNodegraph() {
       courseInformation.yOffsetPercent * viewBox.height + viewBox.y,
     );
   });
+  // Make the icon visibility change depending on when the course is offered
+  const courseCodes = Object.keys(courseScheduleInfo);
+  courseCodes.forEach((courseCode) => {
+    const years = Object.keys(courseScheduleInfo[courseCode]);
+    years.forEach((year) => {
+      const terms = Object.keys(courseScheduleInfo[courseCode][year]);
+      terms.forEach((term) => {
+        document.querySelector(`#${courseCode}.${term}`).style.visibility = 'visible';
+      });
+    });
+  });
+  // Format the icons based on the term
+  handleTermIcons();
 
   // Adding the edges
   // NOTE: Edge drawing is broken if the user zooms in/out with the browser
@@ -374,17 +403,6 @@ export function setupNodegraph() {
 
           addEdge(x3, y3, x4, y4, markerHeight, isPrereq);
         });
-      });
-
-      // Adding the nodes
-      document.querySelectorAll('.course-node').forEach((el) => el.remove());
-      Object.entries(courseInformationByCourseId).forEach(([courseId, courseInformation]) => {
-        // The fixed position of every node is relative to the root window
-        addCourseNode(
-          courseId,
-          courseInformation.xOffsetPercent * viewBox.width + viewBox.x,
-          courseInformation.yOffsetPercent * viewBox.height + viewBox.y,
-        );
       });
 
       // Adding event listeners
