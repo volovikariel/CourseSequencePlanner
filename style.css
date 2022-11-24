@@ -7,7 +7,6 @@ body {
   margin: 0;
   overflow: hidden;
   font-family:Verdana, Geneva, Tahoma, sans-serif;
-  background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
 }
 
 p {
@@ -55,6 +54,7 @@ p {
     display: grid;
     grid-auto-columns: 1fr 1fr;
     justify-items: center;
+    background-color:aliceblue;
 }
 
 #course-term-selector {
@@ -70,7 +70,7 @@ p {
   align-items: center;
   overflow-y: auto;
   padding: 5% 5%;
-  height: fit-content;
+  background-color:paleturquoise;
 }
 
 #course-information-content {
@@ -78,11 +78,13 @@ p {
 }
 
 #program-information-container {
-  grid-area: program-information-container;
-  display: flex;
-  flex-direction: column;
-  padding: 5% 5%;
-  color: indigo;
+    grid-area: program-information-container;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    padding: 5% 5%;
+    background-color:#FEF5E7;
 }
 
 .section-title {
@@ -152,7 +154,7 @@ p {
 }
 
 #root-svg {
-    background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
+    background:#ddd6f3 ;
 }
 
 #root-svg.can-pan {
@@ -246,3 +248,4 @@ p {
     border-radius: 30px;
     box-shadow: 4px 4px white, 4px 4px 0px 3px black;
 }
+
