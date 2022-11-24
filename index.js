@@ -293,9 +293,15 @@ export default function setCourseInformation(courseInformation) {
   }
 }
 
+const termEmojiByTerm = {
+  fall: '🍂',
+  summer: '☀️',
+  winter: '❄️',
+};
+
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
-  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
   setupNodegraph();
 }
 setup();
@@ -303,7 +309,7 @@ setup();
 for (const term of ['summer', 'winter', 'fall']) {
   document.querySelector(`button#${term}`).addEventListener('click', () => {
     currTerm = term;
-    document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+    document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
 
     // load schedule for currYear and currTerm
     loadCourseScheduleSafely();
@@ -312,7 +318,7 @@ for (const term of ['summer', 'winter', 'fall']) {
 
 document.getElementById('year-dropdown').addEventListener('change', (event) => {
   currYear = parseInt(event.target.value, 10);
-  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
 
   // load schedule for currYear and currTerm
   loadCourseScheduleSafely();
