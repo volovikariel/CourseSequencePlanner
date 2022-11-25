@@ -1,5 +1,6 @@
 :root {
     --circle-radius: 50px;
+    --fade-in-out-duration: 1s;
 }
 
 html,
@@ -245,4 +246,20 @@ p {
     cursor: pointer;
     border-radius: 30px;
     box-shadow: 4px 4px white, 4px 4px 0px 3px black;
+}
+
+#error {
+    position: absolute;
+    background: purple;
+    animation: fadeInOut var(--fade-in-out-duration) linear forwards;
+    padding: 1em 1em;
+    font-size: large;
+    z-index: 1;
+    color: white;
+    border-radius: 50%;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0 }
+    15%,50% { opacity: 1 }
 }

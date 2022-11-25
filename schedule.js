@@ -110,11 +110,101 @@ export const courseScheduleInfo = {
       }],
     },
   },
+  MATH204: {
+    2022: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'MATH204',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
   NYA: {
     2023: {
       summer: [{
         courseName: 'Stuff',
         courseCode: 'NYA',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  COMP228: {
+    2022: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'COMP228',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  NYC: {
+    2022: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'NYC',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  COMP346: {
+    2022: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'COMP346',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  CEGEP103: {
+    2022: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'CEGEP103',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  CEGEP105: {
+    2022: {
+      summer: [{
+        courseName: 'Stuff',
+        courseCode: 'CEGEP105',
         startTime: '15:30',
         endTime: '18:00',
         mon: false,
@@ -166,6 +256,16 @@ export function getCourseSchedule(course, year, term) {
   // We'll be returning the time offering of a course in 'schedule' format
   // (which means, an array of courses)
   return courseScheduleInfo?.[course]?.[year]?.[term]?.map((courseSchedule) => [courseSchedule]);
+}
+
+export function getTermOfferings(course) {
+  const termOfferings = [];
+  const years = Object.keys(courseScheduleInfo[course]);
+  for (const year of years) {
+    const terms = Object.keys(courseScheduleInfo[course][year]);
+    termOfferings.push([year, terms]);
+  }
+  return termOfferings;
 }
 
 function intersectDays(scheduleA, scheduleB, day) {

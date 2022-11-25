@@ -8,8 +8,29 @@ import {
   setupNodegraph, courseInformationByCourseId, scrollCourseIntoView, handleTermIcons,
 } from './nodegraph.js';
 import {
-  getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules,
+  getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules, getTermOfferings,
 } from './schedule.js';
+
+let mouseX = 0;
+let mouseY = 0;
+const errorFadeInOutDuration = Number(
+  window
+    .getComputedStyle(document.body)
+    .getPropertyValue('--fade-in-out-duration')
+    .replace('s', ''),
+);
+function showError(msg) {
+  if (document.getElementById('error')) return;
+  const errorElement = document.createElement('div');
+  errorElement.id = 'error';
+  errorElement.innerText = msg;
+  errorElement.style.top = `${mouseY}px`;
+  errorElement.style.left = `${mouseX}px`;
+  document.getElementById('node-graph-container').appendChild(errorElement);
+  setTimeout(() => {
+    errorElement.remove();
+  }, errorFadeInOutDuration * 1000);
+}
 
 const universityDatabase = {
   'Concordia University': {
@@ -167,17 +188,20 @@ class Student {
     }
 
     if (!isCourseOffered(course, year, term)) {
-      throw new Error(`${course} is not offered during ${year} ${term}`);
+      showError(`${course} is only offered during ${getTermOfferings(course)}`);
+      return;
     }
     if (!this.haveCourseRequisitesForCourse(course, year, term)) {
-      throw new Error(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term}`);
+      showError(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term}`);
+      return;
     }
     const validSchedules = intersectSchedules(
       this.schedules[year][term],
       getCourseSchedule(course, year, term),
     );
     if (validSchedules.length === 0) {
-      throw new Error(`${course} clashes with your current schedule`);
+      showError(`${course} clashes with your current schedule`);
+      return;
     }
     this.futureCourses[year][term].add(course);
     document.querySelector(`[course-id=${course}] .circle`).classList.add('future', 'current');
@@ -187,13 +211,16 @@ class Student {
   removeCourseFromFuture(removedCourse, year, term) {
     if (!Object.hasOwn(this.futureCourses, year)
     || !Object.hasOwn(this.futureCourses[year], term)) {
-      throw new Error('Trying to remove course from year or term that doesn\'t exist for User');
+      showError('Trying to remove course from year or term that doesn\'t exist for User');
+      return;
     }
     if (this.isCourseReqForFutureCourses(removedCourse)) {
-      throw new Error('Trying to remove course which serves as a necessary prereq/coreq for other courses');
+      showError('Trying to remove course which serves as a necessary prereq/coreq for other courses');
+      return;
     }
     if (!this.futureCourses[year][term].has(removedCourse)) {
-      throw new Error('Trying to remove course while in the wrong term');
+      showError('Trying to remove course while in the wrong term');
+      return;
     }
     this.futureCourses[year][term].delete(removedCourse);
     document.querySelector(`[course-id=${removedCourse}] .circle`).classList.remove('future', 'current');
@@ -333,7 +360,13 @@ courseList.forEach((course) => {
 document.getElementById('search-course').addEventListener('change', (event) => {
   const selectedCourse = event.target.value;
   if (!courseList.includes(selectedCourse)) {
-    throw new Error('Invalid course selected');
+    showError('Course does not exist');
+    return;
   }
   scrollCourseIntoView(selectedCourse);
+});
+
+document.getElementById('root-svg').addEventListener('mousemove', (event) => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
 });
