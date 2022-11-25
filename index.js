@@ -8,8 +8,31 @@ import {
   setupNodegraph, courseInformationByCourseId, scrollCourseIntoView, handleTermIcons,
 } from './nodegraph.js';
 import {
-  getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules,
+  getCourseSchedule, intersectSchedules, isCourseOffered, loadCourseSchedules, getTermOfferings,
 } from './schedule.js';
+
+let mouseX = 0;
+let mouseY = 0;
+const errorFadeInOutDuration = Number(
+  window
+    .getComputedStyle(document.body)
+    .getPropertyValue('--fade-in-out-duration')
+    .replace('s', ''),
+);
+function showError(msg) {
+  if (document.getElementById('error')) {
+    document.getElementById('error').remove();
+  }
+  const errorElement = document.createElement('div');
+  errorElement.id = 'error';
+  errorElement.innerText = msg;
+  errorElement.style.top = `${mouseY}px`;
+  errorElement.style.left = `${mouseX}px`;
+  document.getElementById('node-graph-container').appendChild(errorElement);
+  setTimeout(() => {
+    errorElement.remove();
+  }, errorFadeInOutDuration * 1000);
+}
 
 const universityDatabase = {
   'Concordia University': {
@@ -118,7 +141,7 @@ class Student {
       fall: 2,
     };
     // All completed courses by year/term
-    const completedCourses = new Set();
+    const completedCourses = this.otherRequirementCompletion;
 
     let passedUpperBounds = false;
     for (let year of Object.keys(this.futureCourses)) {
@@ -166,18 +189,26 @@ class Student {
       };
     }
 
-    if (!isCourseOffered(course, year, term)) {
-      throw new Error(`${course} is not offered during ${year} ${term}`);
+    if (this.otherRequirementCompletion.has(course)) {
+      showError('You\'ve completed this course in the past, you cannot remove it');
+      return;
     }
+
     if (!this.haveCourseRequisitesForCourse(course, year, term)) {
-      throw new Error(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term}`);
+      showError(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term} (\nprereqs=${courseInformationByCourseId[course].prereqs}, \ncoreqs=${courseInformationByCourseId[course].coreqs})`);
+      return;
+    }
+    if (!isCourseOffered(course, year, term)) {
+      showError(`${course} is only offered during ${getTermOfferings(course)}`);
+      return;
     }
     const validSchedules = intersectSchedules(
       this.schedules[year][term],
       getCourseSchedule(course, year, term),
     );
     if (validSchedules.length === 0) {
-      throw new Error(`${course} clashes with your current schedule`);
+      showError(`${course} clashes with your current schedule`);
+      return;
     }
     this.futureCourses[year][term].add(course);
     document.querySelector(`[course-id=${course}] .circle`).classList.add('future', 'current');
@@ -187,13 +218,16 @@ class Student {
   removeCourseFromFuture(removedCourse, year, term) {
     if (!Object.hasOwn(this.futureCourses, year)
     || !Object.hasOwn(this.futureCourses[year], term)) {
-      throw new Error('Trying to remove course from year or term that doesn\'t exist for User');
+      showError('Trying to remove course from year or term that doesn\'t exist for User');
+      return;
     }
     if (this.isCourseReqForFutureCourses(removedCourse)) {
-      throw new Error('Trying to remove course which serves as a necessary prereq/coreq for other courses');
+      showError('Trying to remove course which serves as a necessary prereq/coreq for other courses');
+      return;
     }
     if (!this.futureCourses[year][term].has(removedCourse)) {
-      throw new Error('Trying to remove course while in the wrong term');
+      showError('Can only remove planned courses in the term that they were added');
+      return;
     }
     this.futureCourses[year][term].delete(removedCourse);
     document.querySelector(`[course-id=${removedCourse}] .circle`).classList.remove('future', 'current');
@@ -228,7 +262,19 @@ export const student = new Student(
   university,
   program,
   undefined,
-  new Set(['COMP249']),
+  undefined,
+  new Set([
+    'NYA',
+    'NYB',
+    'NYC',
+    'CEGEP103',
+    'CEGEP105',
+    'MATH203',
+    'MATH204',
+    'MATH205',
+    'CEGEP203',
+    'ENCS272',
+  ]),
 );
 
 function loadCourseScheduleSafely() {
@@ -293,17 +339,27 @@ export default function setCourseInformation(courseInformation) {
   }
 }
 
+const termEmojiByTerm = {
+  fall: '🍂',
+  summer: '☀️',
+  winter: '❄️',
+};
+
 function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
-  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
   setupNodegraph();
+
+  student.otherRequirementCompletion.forEach((course) => {
+    document.querySelector(`[course-id=${course}] .circle`).classList.add('completed');
+  });
 }
 setup();
 
 for (const term of ['summer', 'winter', 'fall']) {
   document.querySelector(`button#${term}`).addEventListener('click', () => {
     currTerm = term;
-    document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+    document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
 
     // load schedule for currYear and currTerm
     loadCourseScheduleSafely();
@@ -312,7 +368,7 @@ for (const term of ['summer', 'winter', 'fall']) {
 
 document.getElementById('year-dropdown').addEventListener('change', (event) => {
   currYear = parseInt(event.target.value, 10);
-  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm}`;
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
 
   // load schedule for currYear and currTerm
   loadCourseScheduleSafely();
@@ -327,7 +383,13 @@ courseList.forEach((course) => {
 document.getElementById('search-course').addEventListener('change', (event) => {
   const selectedCourse = event.target.value;
   if (!courseList.includes(selectedCourse)) {
-    throw new Error('Invalid course selected');
+    showError('Course does not exist');
+    return;
   }
   scrollCourseIntoView(selectedCourse);
+});
+
+document.getElementById('root-svg').addEventListener('mousemove', (event) => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
 });

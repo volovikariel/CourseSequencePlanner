@@ -1,5 +1,6 @@
 :root {
     --circle-radius: 50px;
+    --fade-in-out-duration: 2s;
 }
 
 html,
@@ -114,6 +115,10 @@ p {
 
 .circle.current {
     fill: green;
+}
+
+.circle.completed {
+    fill: gray;
 }
 
 .circle.selected {
@@ -249,3 +254,18 @@ p {
     box-shadow: 4px 4px white, 4px 4px 0px 3px black;
 }
 
+#error {
+    position: absolute;
+    background: purple;
+    animation: fadeInOut var(--fade-in-out-duration) linear forwards;
+    padding: 1em 1em;
+    font-size: large;
+    z-index: 1;
+    color: white;
+    user-select: none;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0 }
+    15%,50% { opacity: 1 }
+}

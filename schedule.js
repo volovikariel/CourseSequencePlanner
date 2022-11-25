@@ -43,7 +43,7 @@ export const courseScheduleInfo = {
           fri: false,
         },
         {
-          courseName: 'The Course Name',
+          courseName: 'Object-Oriented Programming 1',
           courseCode: 'COMP248',
           startTime: '10:00',
           endTime: '12:00',
@@ -81,27 +81,27 @@ export const courseScheduleInfo = {
         wed: true,
         thu: true,
         fri: false,
-      }],
-    },
-  },
-  MATH203: {
-    2022: {
-      fall: [{
-        courseName: 'The Differential and Integral Calculus I',
-        courseCode: 'MATH203',
-        startTime: '15:30',
-        endTime: '18:00',
-        mon: false,
-        tue: true,
-        wed: false,
-        thu: false,
-        fri: true,
       },
       {
-        courseName: 'The Differential and Integral Calculus I',
-        courseCode: 'MATH203',
-        startTime: '11:00',
-        endTime: '12:30',
+        courseName: 'Object-Oriented Programming II',
+        courseCode: 'COMP249',
+        startTime: '14:00',
+        endTime: '16:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: false,
+      }],
+    },
+  },
+  COMP228: {
+    2022: {
+      summer: [{
+        courseName: 'System Hardware',
+        courseCode: 'COMP228',
+        startTime: '15:30',
+        endTime: '18:00',
         mon: false,
         tue: true,
         wed: false,
@@ -110,13 +110,320 @@ export const courseScheduleInfo = {
       }],
     },
   },
-  NYA: {
-    2023: {
+  COMP346: {
+    2022: {
       summer: [{
-        courseName: 'Stuff',
-        courseCode: 'NYA',
+        courseName: 'Operating Systems',
+        courseCode: 'COMP346',
         startTime: '15:30',
         endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  COMP232: {
+    2022: {
+      fall: [{
+        courseName: 'COMP232',
+        courseCode: 'COMP232',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'COMP232',
+        courseCode: 'COMP232',
+        startTime: '14:30',
+        endTime: '18:00',
+        mon: true,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: false,
+      }],
+    },
+  },
+  COMP233: {
+    2022: {
+      summer: [{
+        courseName: 'COMP233',
+        courseCode: 'COMP233',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  ENCS282: {
+    2023: {
+      winter: [{
+        courseName: 'ENCS282',
+        courseCode: 'ENCS282',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  COMP348: {
+    2023: {
+      winter: [{
+        courseName: 'COMP348',
+        courseCode: 'COMP348',
+        startTime: '15:30',
+        endTime: '18:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  COMP352: {
+    2022: {
+      fall: [{
+        courseName: 'COMP352',
+        courseCode: 'COMP352',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'COMP352',
+        courseCode: 'COMP352',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+      summer: [{
+        courseName: 'COMP352',
+        courseCode: 'COMP352',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  ENGR213: {
+    2022: {
+      fall: [{
+        courseName: 'ENGR213',
+        courseCode: 'ENGR213',
+        startTime: '8:00',
+        endTime: '10:00',
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'ENGR213',
+        courseCode: 'ENGR213',
+        startTime: '9:30',
+        endTime: '11:00',
+        mon: true,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: false,
+      }],
+      summer: [{
+        courseName: 'ENGR213',
+        courseCode: 'ENGR213',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  ENGR233: {
+    2022: {
+      fall: [{
+        courseName: 'ENGR233',
+        courseCode: 'ENGR233',
+        startTime: '14:00',
+        endTime: '18:00',
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'ENGR233',
+        courseCode: 'ENGR233',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+      summer: [{
+        courseName: 'ENGR233',
+        courseCode: 'ENGR233',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  MATH251: {
+    2022: {
+      fall: [{
+        courseName: 'MATH251',
+        courseCode: 'MATH251',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: false,
+        wed: true,
+        thu: true,
+        fri: false,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'MATH251',
+        courseCode: 'MATH251',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+      summer: [{
+        courseName: 'MATH251',
+        courseCode: 'MATH251',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  ENGL233: {
+    2022: {
+      fall: [{
+        courseName: 'ENGL233',
+        courseCode: 'ENGL233',
+        startTime: '14:30',
+        endTime: '16:00',
+        mon: true,
+        tue: false,
+        wed: false,
+        thu: true,
+        fri: false,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'ENGL233',
+        courseCode: 'ENGL233',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+      summer: [{
+        courseName: 'ENGL233',
+        courseCode: 'ENGL233',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  HIST202: {
+    2022: {
+      fall: [{
+        courseName: 'HIST202',
+        courseCode: 'HIST202',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: true,
+        tue: false,
+        wed: false,
+        thu: true,
+        fri: false,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'HIST202',
+        courseCode: 'HIST202',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+      summer: [{
+        courseName: 'HIST202',
+        courseCode: 'HIST202',
+        startTime: '11:30',
+        endTime: '13:00',
         mon: false,
         tue: true,
         wed: false,
@@ -166,6 +473,16 @@ export function getCourseSchedule(course, year, term) {
   // We'll be returning the time offering of a course in 'schedule' format
   // (which means, an array of courses)
   return courseScheduleInfo?.[course]?.[year]?.[term]?.map((courseSchedule) => [courseSchedule]);
+}
+
+export function getTermOfferings(course) {
+  const termOfferings = [];
+  const years = Object.keys(courseScheduleInfo[course]);
+  for (const year of years) {
+    const terms = Object.keys(courseScheduleInfo[course][year]);
+    termOfferings.push([year, terms]);
+  }
+  return termOfferings;
 }
 
 function intersectDays(scheduleA, scheduleB, day) {
