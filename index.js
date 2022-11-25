@@ -20,7 +20,9 @@ const errorFadeInOutDuration = Number(
     .replace('s', ''),
 );
 function showError(msg) {
-  if (document.getElementById('error')) return;
+  if (document.getElementById('error')) {
+    document.getElementById('error').remove();
+  }
   const errorElement = document.createElement('div');
   errorElement.id = 'error';
   errorElement.innerText = msg;
@@ -139,7 +141,7 @@ class Student {
       fall: 2,
     };
     // All completed courses by year/term
-    const completedCourses = new Set();
+    const completedCourses = this.otherRequirementCompletion;
 
     let passedUpperBounds = false;
     for (let year of Object.keys(this.futureCourses)) {
@@ -187,12 +189,17 @@ class Student {
       };
     }
 
-    if (!isCourseOffered(course, year, term)) {
-      showError(`${course} is only offered during ${getTermOfferings(course)}`);
+    if (this.otherRequirementCompletion.has(course)) {
+      showError('You\'ve completed this course in the past, you cannot remove it');
       return;
     }
+
     if (!this.haveCourseRequisitesForCourse(course, year, term)) {
-      showError(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term}`);
+      showError(`You don't have the (pre/co)requisites for course ${course} during ${year} ${term} (\nprereqs=${courseInformationByCourseId[course].prereqs}, \ncoreqs=${courseInformationByCourseId[course].coreqs})`);
+      return;
+    }
+    if (!isCourseOffered(course, year, term)) {
+      showError(`${course} is only offered during ${getTermOfferings(course)}`);
       return;
     }
     const validSchedules = intersectSchedules(
@@ -219,7 +226,7 @@ class Student {
       return;
     }
     if (!this.futureCourses[year][term].has(removedCourse)) {
-      showError('Trying to remove course while in the wrong term');
+      showError('Can only remove planned courses in the term that they were added');
       return;
     }
     this.futureCourses[year][term].delete(removedCourse);
@@ -255,7 +262,19 @@ export const student = new Student(
   university,
   program,
   undefined,
-  new Set(['COMP249']),
+  undefined,
+  new Set([
+    'NYA',
+    'NYB',
+    'NYC',
+    'CEGEP103',
+    'CEGEP105',
+    'MATH203',
+    'MATH204',
+    'MATH205',
+    'CEGEP203',
+    'ENCS272',
+  ]),
 );
 
 function loadCourseScheduleSafely() {
@@ -330,6 +349,10 @@ function setup() {
   document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
   document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
   setupNodegraph();
+
+  student.otherRequirementCompletion.forEach((course) => {
+    document.querySelector(`[course-id=${course}] .circle`).classList.add('completed');
+  });
 }
 setup();
 
