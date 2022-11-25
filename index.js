@@ -277,6 +277,8 @@ export const student = new Student(
   ]),
 );
 
+// Loads the course schedules for the current term/year after ensuring that
+// the student's futureCourses and schedules are adequatly populated
 function loadCourseScheduleSafely() {
   if (!Object.hasOwn(student.futureCourses, currYear)
   || !Object.hasOwn(student.futureCourses[currYear], currTerm)) {
@@ -293,6 +295,7 @@ function loadCourseScheduleSafely() {
     };
   }
 
+  // Every time we load a course schedule, the term may change, so we handle the term highlighting
   handleTermIcons();
 
   // Clear all the 'current' classes as we are changing term/year
@@ -332,11 +335,7 @@ function formatProgramInformation(_university, _program) {
 }
 
 export default function setCourseInformation(courseInformation) {
-  if (typeof courseInformation === 'undefined' || courseInformation == null) {
-    document.getElementById('course-information-content').innerHTML = 'Click on a course to display its course information';
-  } else {
-    document.getElementById('course-information-content').innerHTML = formatCourseInformation(courseInformation);
-  }
+  document.getElementById('course-information-content').innerHTML = formatCourseInformation(courseInformation);
 }
 
 const termEmojiByTerm = {
@@ -345,17 +344,23 @@ const termEmojiByTerm = {
   winter: '❄️',
 };
 
+/**
+ * Main entry point to the application
+ */
 function setup() {
-  document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
-  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
+  // Sets up the node graph
   setupNodegraph();
 
+  // Sets the default information
+  document.getElementById('program-information-content').innerHTML = formatProgramInformation(student.university, student.program);
+  document.getElementById('schedule-title').innerText = `${currYear} ${currTerm} ${termEmojiByTerm[currTerm]}`;
   student.otherRequirementCompletion.forEach((course) => {
     document.querySelector(`[course-id=${course}] .circle`).classList.add('completed');
   });
 }
 setup();
 
+// We create the event listeners for the term-selector buttons
 for (const term of ['summer', 'winter', 'fall']) {
   document.querySelector(`button#${term}`).addEventListener('click', () => {
     currTerm = term;
@@ -389,6 +394,8 @@ document.getElementById('search-course').addEventListener('change', (event) => {
   scrollCourseIntoView(selectedCourse);
 });
 
+// We keep track of the mouse's position so that when we display the popup error message
+// we know where to place it
 document.getElementById('root-svg').addEventListener('mousemove', (event) => {
   mouseX = event.clientX;
   mouseY = event.clientY;

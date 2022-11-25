@@ -22,7 +22,6 @@ const mouseButtonByType = {
   3: 'right',
 };
 
-// TODO: courses by university program
 export const courseInformationByCourseId = {
   COMP232: {
     courseName: 'Mathematics for Computer Science',
@@ -459,9 +458,11 @@ export function handleTermIcons() {
 }
 
 export function setupNodegraph() {
+  // Enable panning and zooming in the node graph
   setupPanning();
   setupZooming();
-  // Adding the nodes
+
+  // Add the course nodes based on the selected program
   Object.entries(courseInformationByCourseId).forEach(([courseId, courseInformation]) => {
     // The fixed position of every node is relative to the root window
     addCourseNode(
@@ -470,7 +471,8 @@ export function setupNodegraph() {
       courseInformation.yOffsetPercent * viewBox.height + viewBox.y,
     );
   });
-  // Make the icon visibility change depending on when the course is offered
+
+  // Make the term icon visibility change depending on when the course is offered
   const courseCodes = Object.keys(courseScheduleInfo);
   courseCodes.forEach((courseCode) => {
     const years = Object.keys(courseScheduleInfo[courseCode]);
@@ -481,11 +483,14 @@ export function setupNodegraph() {
       });
     });
   });
-  // Format the icons based on the term
+
+  // Handle the term icon visibility depending on the current year/term
   handleTermIcons();
 
-  // Adding the edges
-  // NOTE: Edge drawing is broken if the user zooms in/out with the browser
+  // Add the edges between the nodes
+  // NOTE: Edges aren't drawn properly if the user zooms in too much with the browser
+  // because of the way viewBox's width/height works
+  // this'll have to be re-engeneered to work properly
   const prereqsByCourseId = Object.entries(courseInformationByCourseId).map(
     ([courseId, { prereqs }]) => [courseId, prereqs],
   );
@@ -528,6 +533,8 @@ export function setupNodegraph() {
             (x2 - x1) ** 2
             + (y2 - y1) ** 2,
           );
+          // This is the arrow marker on the line that makes it look like an arrow's height
+          // The height=length (it's just an isoceles triangle)
           const markerHeight = 6;
           // x3 y3 is the corrected version of x1 y1
           const x3 = x1 + (x2 - x1) * (circleRadius / d);
@@ -540,14 +547,13 @@ export function setupNodegraph() {
         });
       });
 
-      // Adding event listeners
+      // Adding event listeners for the course nodes and the root-svg
       document.querySelectorAll('.course-node').forEach((courseNode) => {
         courseNode.addEventListener('mousedown', clickCourse);
         courseNode.addEventListener('contextmenu', hideContextMenu);
         courseNode.addEventListener('mouseenter', mouseEnter);
       });
-      const rootSvg = document.getElementById('root-svg');
-      rootSvg.addEventListener('contextmenu', hideContextMenu);
+      document.getElementById('root-svg').addEventListener('contextmenu', hideContextMenu);
     });
 }
 
