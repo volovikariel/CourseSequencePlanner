@@ -133,7 +133,7 @@ export const courseScheduleInfo = {
       {
         courseName: 'System Hardware',
         courseCode: 'COMP228',
-        startTime: '9:0',
+        startTime: '9:00',
         endTime: '12:00',
         mon: true,
         tue: false,
