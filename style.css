@@ -210,6 +210,18 @@ p {
     font-size: 1rem;
     font-weight: 600;
 }
+
+#weekdays {
+    display: flex;
+    justify-content: space-between;
+    padding-left: var(--column-width);
+}
+
+.weekday {
+    width: var(--column-width);
+    font-family: "Lexend Deca", sans-serif;
+    text-align: center;
+}
 /* ==== Schedule end start ==== */
 
 .title {
