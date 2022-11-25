@@ -165,11 +165,11 @@ export const courseScheduleInfo = {
     },
   },
   COMP233: {
-    2022: {
-      summer: [{
+    2023: {
+      winter: [{
         courseName: 'COMP233',
         courseCode: 'COMP233',
-        startTime: '15:30',
+        startTime: '15:00',
         endTime: '18:00',
         mon: false,
         tue: true,
@@ -338,6 +338,45 @@ export const courseScheduleInfo = {
       summer: [{
         courseName: 'ENGR233',
         courseCode: 'ENGR233',
+        startTime: '11:30',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+  },
+  SOEN287: {
+    2022: {
+      fall: [{
+        courseName: 'SOEN287',
+        courseCode: 'SOEN287',
+        startTime: '9:00',
+        endTime: '12:00',
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+    },
+    2023: {
+      winter: [{
+        courseName: 'SOEN287',
+        courseCode: 'SOEN287',
+        startTime: '12:00',
+        endTime: '13:00',
+        mon: false,
+        tue: true,
+        wed: false,
+        thu: false,
+        fri: true,
+      }],
+      summer: [{
+        courseName: 'SOEN287',
+        courseCode: 'SOEN287',
         startTime: '11:30',
         endTime: '13:00',
         mon: false,
