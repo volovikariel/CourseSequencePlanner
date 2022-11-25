@@ -78,8 +78,8 @@ export const courseScheduleInfo = {
         endTime: '15:30',
         mon: true,
         tue: false,
-        wed: true,
-        thu: true,
+        wed: false,
+        thu: false,
         fri: false,
       },
       {
@@ -96,8 +96,8 @@ export const courseScheduleInfo = {
     },
   },
   COMP228: {
-    2022: {
-      summer: [{
+    2023: {
+      winter: [{
         courseName: 'System Hardware',
         courseCode: 'COMP228',
         startTime: '15:30',
@@ -107,12 +107,23 @@ export const courseScheduleInfo = {
         wed: false,
         thu: false,
         fri: true,
+      },
+      {
+        courseName: 'System Hardware',
+        courseCode: 'COMP228',
+        startTime: '9:0',
+        endTime: '12:00',
+        mon: true,
+        tue: false,
+        wed: false,
+        thu: true,
+        fri: false,
       }],
     },
   },
   COMP346: {
-    2022: {
-      summer: [{
+    2023: {
+      fall: [{
         courseName: 'Operating Systems',
         courseCode: 'COMP346',
         startTime: '15:30',
@@ -242,7 +253,7 @@ export const courseScheduleInfo = {
       fall: [{
         courseName: 'ENGR213',
         courseCode: 'ENGR213',
-        startTime: '8:00',
+        startTime: '9:00',
         endTime: '10:00',
         mon: false,
         tue: false,
