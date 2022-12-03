@@ -1,5 +1,5 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// learn more about it in the docs String
 
 generator client {
   provider = "prisma-client-js"
@@ -10,7 +10,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Course {
-  id   Int    @id @default(autoincrement())
-  name String
+model CourseSchedule {
+  courseID                   Int
+  termCode                   Int
+  session                    String
+  subject                    String
+  catalog                    String
+  section                    String
+  componentCode              String
+  componentDescription       String
+  classNumber                Int
+  classAssociation           Int
+  courseTitle                String
+  topicID                    Int
+  topicDescription           String
+  classStatus                String
+  locationCode               String
+  instructionModeCode        String
+  instructionModeDescription String
+  meetingPatternNumber       Int
+  roomCode                   String
+  buildingCode               String
+  room                       String
+  classStartTime             String
+  classEndTime               String
+  modays                     String
+  tuesdays                   String
+  wednesdays                 String
+  thursdays                  String
+  fridays                    String
+  saturdays                  String
+  sundays                    String
+  classStartDate             String
+  classEndDate               String
+  career                     String
+  departmentCode             String
+  departmentDescription      String
+  facultyCode                String
+  facultyDescription         String
+  enrollmentCapacity         Int
+  currentEnrollment          String
+  waitlistCapacity           Int
+  currentWaitlistTotal       String
+  hasSeatReserved            String
+
+  @@unique([subject, catalog, termCode, section, meetingPatternNumber])
 }
