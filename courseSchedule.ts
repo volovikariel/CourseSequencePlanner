@@ -64,4 +64,4 @@ export const CourseScheduleSchema = z.object({
     currentWaitlistTotal: z.string(),
     hasSeatReserved: z.string()
 }).strict();
-export type CourseSchedule = z.infer<typeof CourseScheduleSchema>
+type CourseSchedule = z.infer<typeof CourseScheduleSchema>
