@@ -1,42 +1,30 @@
 import { PrismaClient } from '@prisma/client';
-import { CourseScheduleAPIResponse, CourseScheduleSchema, fetchCourseSchedules } from '../courseSchedule.js';
+import { z } from 'zod';
+import { CourseScheduleAPIResponse, CourseScheduleSchema, fetchCourseSchedules } from '../src/courseSchedule.js';
 const prisma = new PrismaClient();
 
-async function main() {
-  // Delete all entries
-  await prisma.courseSchedule.deleteMany();
-
-  // Insert all course schedule values
+async function seedCourseSchedules() {
   const rawCourseScheduleData = await fetchCourseSchedules();
   const rawCourseScheduleDataFrom2022 = rawCourseScheduleData.filter((course: CourseScheduleAPIResponse) => course.classStartDate.endsWith('2022'));
-  const courseSchedules = [];
-  for (const rawCourseSchedule of rawCourseScheduleDataFrom2022) {
-    const result = CourseScheduleSchema.safeParse(rawCourseSchedule);
-    if (result.success) {
-      console.log(result.data);
-      courseSchedules.push(result.data);
-    }
-    else {
-      console.log(result.error);
-      console.log(rawCourseSchedule);
-      return;
-    }
-  }
-  console.log(`#Rows to add: ${courseSchedules.length}`);
-  const creates = [];
-  const rowIds = new Set();
-  for (const [rowNum, courseSchedule] of courseSchedules.entries()) {
-    const rowId = `(${courseSchedule.subject}, ${courseSchedule.catalog}, ${courseSchedule.termCode}, ${courseSchedule.section}, ${courseSchedule.meetingPatternNumber})`;
-    console.log(`Inserting row #${rowNum}: ${rowId}`);
-    if (rowIds.has(rowId)) {
-      console.log(`Found duplicate row ${rowId}`);
-      return;
-    } else {
-      rowIds.add(rowId);
-    }
-    creates.push(prisma.courseSchedule.create({ data: courseSchedule }));
-  }
-  prisma.$transaction(creates);
+  const courseSchedulesFrom2022 = z.array(CourseScheduleSchema).parse(rawCourseScheduleDataFrom2022);
+  const upserts = courseSchedulesFrom2022.map(courseSchedule => prisma.courseSchedule.upsert({
+    where: {
+      courseScheduleId: {
+        subject: courseSchedule.subject,
+        catalog: courseSchedule.catalog,
+        termCode: courseSchedule.termCode,
+        section: courseSchedule.section,
+        meetingPatternNumber: courseSchedule.meetingPatternNumber
+      }
+    },
+    update: {},
+    create: courseSchedule,
+  }));
+  prisma.$transaction(upserts);
+}
+
+async function main() {
+  await seedCourseSchedules();
 }
 main()
   .then(async () => {

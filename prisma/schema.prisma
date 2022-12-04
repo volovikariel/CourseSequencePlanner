@@ -54,5 +54,5 @@ model CourseSchedule {
   currentWaitlistTotal       String
   hasSeatReserved            String
 
-  @@unique([subject, catalog, termCode, section, meetingPatternNumber])
+  @@unique(fields: [subject, catalog, termCode, section, meetingPatternNumber], name: "courseScheduleId")
 }

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "ts-node --transpile-only script.ts"
+    "start": "ts-node --transpile-only src/script.ts"
   },
   "prisma": {
     "seed": "ts-node --transpile-only prisma/seed.ts"
