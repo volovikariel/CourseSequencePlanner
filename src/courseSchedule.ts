@@ -17,28 +17,25 @@ export async function fetchCourseSchedules(): Promise<CourseScheduleAPIResponse[
     return await fetch(courseScheduleURL, headers).then(res => res.json());
 }
 
-function validateIsNumberAndReturnValue() {
-    return z.string().regex(/^\d*$/, 'Must be a number').transform(Number);
-}
 export const CourseScheduleSchema = z.object({
-    courseID: validateIsNumberAndReturnValue(),
-    termCode: validateIsNumberAndReturnValue(),
+    courseID: z.coerce.number(),
+    termCode: z.coerce.number(),
     session: z.string(),
     subject: z.string(),
     catalog: z.string(),
     section: z.string(),
     componentCode: z.string(),
     componentDescription: z.string(),
-    classNumber: validateIsNumberAndReturnValue(),
-    classAssociation: validateIsNumberAndReturnValue(),
+    classNumber: z.coerce.number(),
+    classAssociation: z.coerce.number(),
     courseTitle: z.string(),
-    topicID: validateIsNumberAndReturnValue(),
+    topicID: z.coerce.number(),
     topicDescription: z.string(),
     classStatus: z.string(),
     locationCode: z.string(),
     instructionModeCode: z.string(),
     instructionModeDescription: z.string(),
-    meetingPatternNumber: validateIsNumberAndReturnValue(),
+    meetingPatternNumber: z.coerce.number(),
     roomCode: z.string(),
     buildingCode: z.string(),
     room: z.string(),
@@ -58,9 +55,9 @@ export const CourseScheduleSchema = z.object({
     departmentDescription: z.string(),
     facultyCode: z.string(),
     facultyDescription: z.string(),
-    enrollmentCapacity: validateIsNumberAndReturnValue(),
+    enrollmentCapacity: z.coerce.number(),
     currentEnrollment: z.string(),
-    waitlistCapacity: validateIsNumberAndReturnValue(),
+    waitlistCapacity: z.coerce.number(),
     currentWaitlistTotal: z.string(),
     hasSeatReserved: z.string()
 }).strict();
