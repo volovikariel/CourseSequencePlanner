@@ -11,8 +11,8 @@ export const circleRadius = Number(
     .trimStart()
     .replace('px', ''),
 );
-const svg = document.getElementById('root-svg');
-const viewBox = svg.viewBox.baseVal;
+const rootSvg = document.getElementById('root-svg');
+const viewBox = rootSvg.viewBox.baseVal;
 let isPointerDown = false;
 let pointerOrigin;
 
@@ -249,15 +249,14 @@ export const courseInformationByCourseId = {
     information: 'A survey of the history of Europe from the French Revolution to the present, with emphasis on the development of ideas and political institutions.',
   },
 };
-function convertPosToSvg(x, y) {
-  const point = new DOMPoint();
+function convertPosToSvg(clientX, clientY) {
   // clientX and cientY are relative to the document
-  point.x = x;
-  point.y = y;
+  const point = new DOMPoint(clientX, clientY);
+
   // getScreenCTM() returns the matrix transformation FROM svg TO document coordinates
   // We want the opposite (document TO svg), so we call inverse()
   // We then apply this same transformation to our x, y positions
-  const docToSvgCoordinates = svg.getScreenCTM().inverse();
+  const docToSvgCoordinates = rootSvg.getScreenCTM().inverse();
   return point.matrixTransform(docToSvgCoordinates);
 }
 
@@ -270,7 +269,7 @@ function setupPanning() {
     isPointerDown = true;
     // Define new 'pan sequence' pointer orign
     pointerOrigin = convertPosToSvg(e.clientX, e.clientY);
-    svg.classList.add('panning');
+    rootSvg.classList.add('panning');
   }
   function onMouseMove(e) {
     if (!isPointerDown) return;
@@ -286,17 +285,17 @@ function setupPanning() {
     viewBox.x -= (deltaX);
     viewBox.y -= (deltaY);
     const newViewboxString = `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`;
-    svg.setAttribute('viewBox', newViewboxString);
+    rootSvg.setAttribute('viewBox', newViewboxString);
   }
   function onMouseUp() {
     isPointerDown = false;
-    svg.classList.remove('panning');
+    rootSvg.classList.remove('panning');
   }
-  svg.addEventListener('mousedown', onMouseDown);
-  svg.addEventListener('mousemove', onMouseMove);
-  svg.addEventListener('mouseup', onMouseUp);
+  rootSvg.addEventListener('mousedown', onMouseDown);
+  rootSvg.addEventListener('mousemove', onMouseMove);
+  rootSvg.addEventListener('mouseup', onMouseUp);
   // Pointer leaves SVG area
-  svg.addEventListener('mouseleave', onMouseUp);
+  rootSvg.addEventListener('mouseleave', onMouseUp);
   // Panning section end
 }
 
@@ -338,7 +337,7 @@ function setupZooming() {
       viewBox.y -= pointerPosOldCoords.y - viewBox.y;
     }
   }
-  svg.addEventListener('wheel', onMouseWheel);
+  rootSvg.addEventListener('wheel', onMouseWheel);
   // Zooming section end
 }
 
