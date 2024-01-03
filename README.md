@@ -1,4 +1,4 @@
-*Very* rough prototype of a course sequence planner
+Rough prototype of a course sequence planner.
 
 You can run this locally with `npm run start`.
 
